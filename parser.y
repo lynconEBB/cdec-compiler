@@ -39,6 +39,8 @@
 %lex-param { Cd::Scanner& scanner }
 %parse-param { Cd::Scanner& scanner }
 %parse-param { Cd::Driver& driver }
+%define parse.trace
+%define parse.error custom
 
 %token<TokenType> CHAR INT FLOAT DOUBLE VOID 
 %token COMMA LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI ASSIGN REFER
@@ -61,10 +63,18 @@ type:
     | FLOAT
     | DOUBLE
     | VOID
+    | %empty
 ;
 
 %%
 
 void Cd::Parser::error(const std::string& message) {
+    std::cout << "AAAA no" << driver.lineNumber  << std::endl;
     std::cout << message << std::endl;
+}
+
+void Cd::Parser::report_syntax_error (const context& ctx) const
+{
+    std::cout << "CURRR" << std::endl;
+    yyclearin();
 }

@@ -10,6 +10,7 @@
 #undef YY_DECL
 #define YY_DECL Cd::Parser::symbol_type Cd::Scanner::getNextToken()
 
+#include <iostream>
 #include "parser.h"
 
 namespace Cd {
@@ -18,7 +19,7 @@ namespace Cd {
     class Scanner : public yyFlexLexer {
     public:
 
-        Scanner(Driver &driver) : m_driver(driver) {}
+        Scanner(Driver &driver, std::istream& inStream) : m_driver(driver), yyFlexLexer(inStream, std::cout) {}
         virtual Cd::Parser::symbol_type getNextToken();
 
     private:

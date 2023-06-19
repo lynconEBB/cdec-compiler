@@ -3,13 +3,14 @@
 
 #include "scanner.h"
 #include "parser.h"
+#include <fstream>
 
 namespace Cd {
 
 class Driver {
 
 public:
-    Driver() : m_scanner(*this), m_parser(m_scanner, *this) {}
+    Driver(std::ifstream& inputStream) : m_scanner(*this, inputStream), m_parser(m_scanner, *this) {}
     void init();
     int lineNumber;
 

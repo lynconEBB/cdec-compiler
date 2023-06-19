@@ -5,7 +5,18 @@
 
 
 int main(int argc, char* argv[]) {
-    Cd::Driver driver;
-    // driver.init();
+     if (argc < 2) {
+        std::cout << "Missing parameter!!\n";
+        exit(1);
+    }
+    std::ifstream file(argv[1], std::fstream::in);
+
+    if (!file.good()){
+        std::cout << "Cannot find specified file!!\n";
+        exit(1);
+    }
+
+    Cd::Driver driver(file);
+    driver.init();
     return 0;
 }
