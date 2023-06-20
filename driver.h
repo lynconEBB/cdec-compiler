@@ -3,7 +3,9 @@
 
 #include "scanner.h"
 #include "parser.h"
+#include "symTable.h"
 #include <fstream>
+
 
 namespace Cd {
 
@@ -17,6 +19,7 @@ public:
 private:
     Scanner m_scanner;
     Parser m_parser;
+    SymbolTable m_symbolTable;
 };
 
 }

@@ -35,7 +35,7 @@
 // private implementation details that can be changed or removed.
 
 // "%code top" blocks.
-#line 28 "parser.y"
+#line 31 "parser.y"
 
     #include <iostream>
     #include "scanner.h"
@@ -196,6 +196,10 @@ namespace  Cd  {
   {
     switch (that.kind ())
     {
+      case symbol_kind::S_ID: // ID
+        value.YY_MOVE_OR_COPY< SymbolInfo* > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_CHAR: // CHAR
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_FLOAT: // FLOAT
@@ -204,20 +208,11 @@ namespace  Cd  {
         value.YY_MOVE_OR_COPY< TokenType > (YY_MOVE (that.value));
         break;
 
-      case symbol_kind::S_CHLIT: // CHLIT
-        value.YY_MOVE_OR_COPY< char > (YY_MOVE (that.value));
-        break;
-
-      case symbol_kind::S_FLIT: // FLIT
-        value.YY_MOVE_OR_COPY< double > (YY_MOVE (that.value));
-        break;
-
       case symbol_kind::S_ILIT: // ILIT
-        value.YY_MOVE_OR_COPY< int > (YY_MOVE (that.value));
-        break;
-
+      case symbol_kind::S_FLIT: // FLIT
+      case symbol_kind::S_CHLIT: // CHLIT
       case symbol_kind::S_STRING: // STRING
-        value.YY_MOVE_OR_COPY< std::string > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< std::variant<int,double,char,std::string> > (YY_MOVE (that.value));
         break;
 
       default:
@@ -235,6 +230,10 @@ namespace  Cd  {
   {
     switch (that.kind ())
     {
+      case symbol_kind::S_ID: // ID
+        value.move< SymbolInfo* > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_CHAR: // CHAR
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_FLOAT: // FLOAT
@@ -243,20 +242,11 @@ namespace  Cd  {
         value.move< TokenType > (YY_MOVE (that.value));
         break;
 
-      case symbol_kind::S_CHLIT: // CHLIT
-        value.move< char > (YY_MOVE (that.value));
-        break;
-
-      case symbol_kind::S_FLIT: // FLIT
-        value.move< double > (YY_MOVE (that.value));
-        break;
-
       case symbol_kind::S_ILIT: // ILIT
-        value.move< int > (YY_MOVE (that.value));
-        break;
-
+      case symbol_kind::S_FLIT: // FLIT
+      case symbol_kind::S_CHLIT: // CHLIT
       case symbol_kind::S_STRING: // STRING
-        value.move< std::string > (YY_MOVE (that.value));
+        value.move< std::variant<int,double,char,std::string> > (YY_MOVE (that.value));
         break;
 
       default:
@@ -274,6 +264,10 @@ namespace  Cd  {
     state = that.state;
     switch (that.kind ())
     {
+      case symbol_kind::S_ID: // ID
+        value.copy< SymbolInfo* > (that.value);
+        break;
+
       case symbol_kind::S_CHAR: // CHAR
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_FLOAT: // FLOAT
@@ -282,20 +276,11 @@ namespace  Cd  {
         value.copy< TokenType > (that.value);
         break;
 
-      case symbol_kind::S_CHLIT: // CHLIT
-        value.copy< char > (that.value);
-        break;
-
-      case symbol_kind::S_FLIT: // FLIT
-        value.copy< double > (that.value);
-        break;
-
       case symbol_kind::S_ILIT: // ILIT
-        value.copy< int > (that.value);
-        break;
-
+      case symbol_kind::S_FLIT: // FLIT
+      case symbol_kind::S_CHLIT: // CHLIT
       case symbol_kind::S_STRING: // STRING
-        value.copy< std::string > (that.value);
+        value.copy< std::variant<int,double,char,std::string> > (that.value);
         break;
 
       default:
@@ -311,6 +296,10 @@ namespace  Cd  {
     state = that.state;
     switch (that.kind ())
     {
+      case symbol_kind::S_ID: // ID
+        value.move< SymbolInfo* > (that.value);
+        break;
+
       case symbol_kind::S_CHAR: // CHAR
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_FLOAT: // FLOAT
@@ -319,20 +308,11 @@ namespace  Cd  {
         value.move< TokenType > (that.value);
         break;
 
-      case symbol_kind::S_CHLIT: // CHLIT
-        value.move< char > (that.value);
-        break;
-
-      case symbol_kind::S_FLIT: // FLIT
-        value.move< double > (that.value);
-        break;
-
       case symbol_kind::S_ILIT: // ILIT
-        value.move< int > (that.value);
-        break;
-
+      case symbol_kind::S_FLIT: // FLIT
+      case symbol_kind::S_CHLIT: // CHLIT
       case symbol_kind::S_STRING: // STRING
-        value.move< std::string > (that.value);
+        value.move< std::variant<int,double,char,std::string> > (that.value);
         break;
 
       default:
@@ -589,6 +569,10 @@ namespace  Cd  {
          when using variants.  */
       switch (yyr1_[yyn])
     {
+      case symbol_kind::S_ID: // ID
+        yylhs.value.emplace< SymbolInfo* > ();
+        break;
+
       case symbol_kind::S_CHAR: // CHAR
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_FLOAT: // FLOAT
@@ -597,20 +581,11 @@ namespace  Cd  {
         yylhs.value.emplace< TokenType > ();
         break;
 
-      case symbol_kind::S_CHLIT: // CHLIT
-        yylhs.value.emplace< char > ();
-        break;
-
-      case symbol_kind::S_FLIT: // FLIT
-        yylhs.value.emplace< double > ();
-        break;
-
       case symbol_kind::S_ILIT: // ILIT
-        yylhs.value.emplace< int > ();
-        break;
-
+      case symbol_kind::S_FLIT: // FLIT
+      case symbol_kind::S_CHLIT: // CHLIT
       case symbol_kind::S_STRING: // STRING
-        yylhs.value.emplace< std::string > ();
+        yylhs.value.emplace< std::variant<int,double,char,std::string> > ();
         break;
 
       default:
@@ -627,8 +602,258 @@ namespace  Cd  {
         {
           switch (yyn)
             {
+  case 3: // declarations: declarations declaration
+#line 75 "parser.y"
+    {
 
-#line 632 "parser.cpp"
+    }
+#line 611 "parser.cpp"
+    break;
+
+  case 4: // declarations: declaration
+#line 79 "parser.y"
+    {
+
+    }
+#line 619 "parser.cpp"
+    break;
+
+  case 5: // declaration: type names SEMI
+#line 86 "parser.y"
+    {
+
+    }
+#line 627 "parser.cpp"
+    break;
+
+  case 11: // names: names COMMA variable
+#line 101 "parser.y"
+    {
+
+    }
+#line 635 "parser.cpp"
+    break;
+
+  case 12: // names: names COMMA initialization
+#line 105 "parser.y"
+    {
+
+    }
+#line 643 "parser.cpp"
+    break;
+
+  case 13: // names: variable
+#line 109 "parser.y"
+    {
+
+    }
+#line 651 "parser.cpp"
+    break;
+
+  case 14: // names: initialization
+#line 113 "parser.y"
+    {
+
+    }
+#line 659 "parser.cpp"
+    break;
+
+  case 15: // variable: ID
+#line 120 "parser.y"
+    {
+
+    }
+#line 667 "parser.cpp"
+    break;
+
+  case 16: // variable: ID array
+#line 124 "parser.y"
+    {
+
+    }
+#line 675 "parser.cpp"
+    break;
+
+  case 17: // array: LBRACK expression RBRACK
+#line 131 "parser.y"
+    {
+        
+    }
+#line 683 "parser.cpp"
+    break;
+
+  case 18: // array: LBRACK ILIT RBRACK
+#line 135 "parser.y"
+    {
+
+    }
+#line 691 "parser.cpp"
+    break;
+
+  case 19: // initialization: scalar_initialization
+#line 142 "parser.y"
+    { }
+#line 697 "parser.cpp"
+    break;
+
+  case 20: // initialization: vector_initialization
+#line 144 "parser.y"
+    { }
+#line 703 "parser.cpp"
+    break;
+
+  case 21: // scalar_initialization: ID ASSIGN literal
+#line 149 "parser.y"
+    {
+
+    }
+#line 711 "parser.cpp"
+    break;
+
+  case 22: // vector_initialization: ID array ASSIGN LBRACE values RBRACE
+#line 156 "parser.y"
+    {
+
+    }
+#line 719 "parser.cpp"
+    break;
+
+  case 23: // values: values COMMA literal
+#line 163 "parser.y"
+    {
+
+    }
+#line 727 "parser.cpp"
+    break;
+
+  case 24: // values: literal
+#line 167 "parser.y"
+    {
+
+    }
+#line 735 "parser.cpp"
+    break;
+
+  case 25: // literal: ILIT
+#line 174 "parser.y"
+    { }
+#line 741 "parser.cpp"
+    break;
+
+  case 26: // literal: FLIT
+#line 176 "parser.y"
+    { }
+#line 747 "parser.cpp"
+    break;
+
+  case 27: // literal: CHLIT
+#line 178 "parser.y"
+    { }
+#line 753 "parser.cpp"
+    break;
+
+  case 28: // expression: expression ADD expression
+#line 183 "parser.y"
+        { 
+	}
+#line 760 "parser.cpp"
+    break;
+
+  case 29: // expression: expression MUL expression
+#line 186 "parser.y"
+        {
+	}
+#line 767 "parser.cpp"
+    break;
+
+  case 30: // expression: expression DIV expression
+#line 189 "parser.y"
+        {
+	}
+#line 774 "parser.cpp"
+    break;
+
+  case 31: // expression: ID INC
+#line 192 "parser.y"
+        {
+		/* increment */
+	}
+#line 782 "parser.cpp"
+    break;
+
+  case 32: // expression: INC ID
+#line 196 "parser.y"
+        {
+		/* increment */
+	}
+#line 790 "parser.cpp"
+    break;
+
+  case 33: // expression: expression OR expression
+#line 200 "parser.y"
+        {
+	}
+#line 797 "parser.cpp"
+    break;
+
+  case 34: // expression: expression AND expression
+#line 203 "parser.y"
+        {
+	}
+#line 804 "parser.cpp"
+    break;
+
+  case 35: // expression: NOT expression
+#line 206 "parser.y"
+        {
+	}
+#line 811 "parser.cpp"
+    break;
+
+  case 36: // expression: expression EQU expression
+#line 209 "parser.y"
+        {
+	}
+#line 818 "parser.cpp"
+    break;
+
+  case 37: // expression: expression REL expression
+#line 212 "parser.y"
+        {
+	}
+#line 825 "parser.cpp"
+    break;
+
+  case 38: // expression: LPAREN expression RPAREN
+#line 215 "parser.y"
+        {
+	}
+#line 832 "parser.cpp"
+    break;
+
+  case 39: // expression: variable
+#line 218 "parser.y"
+        { 
+	}
+#line 839 "parser.cpp"
+    break;
+
+  case 40: // expression: literal
+#line 221 "parser.y"
+        {
+	}
+#line 846 "parser.cpp"
+    break;
+
+  case 41: // expression: ADD literal
+#line 224 "parser.y"
+        {
+	}
+#line 853 "parser.cpp"
+    break;
+
+
+#line 857 "parser.cpp"
 
             default:
               break;
@@ -810,8 +1035,11 @@ namespace  Cd  {
   "DOUBLE", "VOID", "COMMA", "LPAREN", "RPAREN", "LBRACK", "RBRACK",
   "LBRACE", "RBRACE", "SEMI", "ASSIGN", "REFER", "IF", "ELSE", "WHILE",
   "FOR", "CONTINUE", "BREAK", "RETURN", "ADD", "MUL", "DIV", "INC", "DEC",
-  "OR", "AND", "NOT", "EQU", "REL", "ILIT", "FLIT", "CHLIT", "STRING",
-  "ID", "$accept", "all", "type", YY_NULLPTR
+  "OR", "AND", "NOT", "EQU", "REL", "MINUS", "ILIT", "FLIT", "CHLIT",
+  "STRING", "ID", "$accept", "program", "declarations", "declaration",
+  "type", "names", "variable", "array", "initialization",
+  "scalar_initialization", "vector_initialization", "values", "literal",
+  "expression", YY_NULLPTR
     };
     return yy_sname[yysymbol];
   }
@@ -865,72 +1093,124 @@ namespace  Cd  {
 
 
 
-  const signed char  Parser ::yypact_ninf_ = -4;
+  const signed char  Parser ::yypact_ninf_ = -27;
 
   const signed char  Parser ::yytable_ninf_ = -1;
 
   const signed char
    Parser ::yypact_[] =
   {
-      -3,    -4,    -4,    -4,    -4,    -4,     5,    -4,    -4
+      95,   -27,   -27,   -27,   -27,   -27,    10,    95,   -27,   -26,
+     -27,   -27,     2,    -4,   -27,   -27,   -27,   -27,    -8,   -11,
+       6,   -26,   -27,    12,   -11,   -17,    12,    21,   -27,   -27,
+      -9,   -27,   -27,    53,   -27,   -27,    23,   -27,   -27,    37,
+     -27,   -27,   -27,   -27,   -27,   -27,   -27,    12,    12,    12,
+      12,    12,    12,    12,   -11,   -27,    27,   -27,   -27,    63,
+      48,   -18,    16,    -2,   -27,   -11,   -27,   -27
   };
 
   const signed char
    Parser ::yydefact_[] =
   {
-       8,     4,     3,     5,     6,     7,     0,     2,     1
+       0,     7,     6,     8,     9,    10,     0,     2,     4,     0,
+       1,     3,    15,     0,    13,    14,    19,    20,     0,     0,
+      16,     0,     5,     0,     0,     0,     0,    25,    26,    27,
+      15,    39,    40,     0,    25,    21,     0,    11,    12,     0,
+      41,    32,    35,    18,    31,    16,    17,     0,     0,     0,
+       0,     0,     0,     0,     0,    38,    28,    29,    30,    33,
+      34,    36,    37,     0,    24,     0,    22,    23
   };
 
   const signed char
    Parser ::yypgoto_[] =
   {
-      -4,    -4,    -4
+     -27,   -27,   -27,    31,   -27,   -27,    -6,     9,    24,   -27,
+     -27,   -27,   -19,     8
   };
 
   const signed char
    Parser ::yydefgoto_[] =
   {
-       0,     6,     7
+       0,     6,     7,     8,     9,    13,    31,    20,    15,    16,
+      17,    63,    32,    33
   };
 
   const signed char
    Parser ::yytable_[] =
   {
-       1,     2,     3,     4,     5,     8
+      35,    23,    18,    14,    21,    40,    65,    47,    48,    49,
+      10,    22,    66,    18,    12,    37,    53,    24,    19,    44,
+      25,    23,    36,    41,    26,    34,    28,    29,    27,    28,
+      29,    39,    30,    43,    42,    64,    54,    24,    11,    45,
+      25,    47,    48,    49,    26,    38,    67,    55,    34,    28,
+      29,     0,    30,    48,    49,    56,    57,    58,    59,    60,
+      61,    62,    47,    48,    49,    46,     0,    50,    51,     0,
+      52,    53,     0,    47,    48,    49,     0,     0,    47,    48,
+      49,    52,    53,    50,    51,     0,    52,    53,    47,    48,
+      49,     0,     0,     0,    51,     0,    52,    53,     1,     2,
+       3,     4,     5
   };
 
   const signed char
    Parser ::yycheck_[] =
   {
-       3,     4,     5,     6,     7,     0
+      19,     9,    11,     9,     8,    24,     8,    25,    26,    27,
+       0,    15,    14,    11,    40,    21,    34,    25,    16,    28,
+      28,     9,    16,    40,    32,    36,    37,    38,    36,    37,
+      38,    23,    40,    12,    26,    54,    13,    25,     7,    30,
+      28,    25,    26,    27,    32,    21,    65,    10,    36,    37,
+      38,    -1,    40,    26,    27,    47,    48,    49,    50,    51,
+      52,    53,    25,    26,    27,    12,    -1,    30,    31,    -1,
+      33,    34,    -1,    25,    26,    27,    -1,    -1,    25,    26,
+      27,    33,    34,    30,    31,    -1,    33,    34,    25,    26,
+      27,    -1,    -1,    -1,    31,    -1,    33,    34,     3,     4,
+       5,     6,     7
   };
 
   const signed char
    Parser ::yystos_[] =
   {
-       0,     3,     4,     5,     6,     7,    41,    42,     0
+       0,     3,     4,     5,     6,     7,    42,    43,    44,    45,
+       0,    44,    40,    46,    47,    49,    50,    51,    11,    16,
+      48,     8,    15,     9,    25,    28,    32,    36,    37,    38,
+      40,    47,    53,    54,    36,    53,    16,    47,    49,    54,
+      53,    40,    54,    12,    28,    48,    12,    25,    26,    27,
+      30,    31,    33,    34,    13,    10,    54,    54,    54,    54,
+      54,    54,    54,    52,    53,     8,    14,    53
   };
 
   const signed char
    Parser ::yyr1_[] =
   {
-       0,    40,    41,    42,    42,    42,    42,    42,    42
+       0,    41,    42,    43,    43,    44,    45,    45,    45,    45,
+      45,    46,    46,    46,    46,    47,    47,    48,    48,    49,
+      49,    50,    51,    52,    52,    53,    53,    53,    54,    54,
+      54,    54,    54,    54,    54,    54,    54,    54,    54,    54,
+      54,    54
   };
 
   const signed char
    Parser ::yyr2_[] =
   {
-       0,     2,     1,     1,     1,     1,     1,     1,     0
+       0,     2,     1,     2,     1,     3,     1,     1,     1,     1,
+       1,     3,     3,     1,     1,     1,     2,     3,     3,     1,
+       1,     3,     6,     3,     1,     1,     1,     1,     3,     3,
+       3,     2,     2,     3,     3,     2,     3,     3,     3,     1,
+       1,     2
   };
 
 
 
 
 #if YYDEBUG
-  const signed char
+  const unsigned char
    Parser ::yyrline_[] =
   {
-       0,    58,    58,    61,    62,    63,    64,    65,    66
+       0,    70,    70,    74,    78,    85,    92,    93,    94,    95,
+      96,   100,   104,   108,   112,   119,   123,   130,   134,   141,
+     143,   148,   155,   162,   166,   173,   175,   177,   182,   185,
+     188,   191,   195,   199,   202,   205,   208,   211,   214,   217,
+     220,   223
   };
 
   void
@@ -963,9 +1243,9 @@ namespace  Cd  {
 
 #line 5 "parser.y"
 } //  Cd 
-#line 967 "parser.cpp"
+#line 1247 "parser.cpp"
 
-#line 69 "parser.y"
+#line 227 "parser.y"
 
 
 void Cd::Parser::error(const std::string& message) {
@@ -976,5 +1256,4 @@ void Cd::Parser::error(const std::string& message) {
 void Cd::Parser::report_syntax_error (const context& ctx) const
 {
     std::cout << "CURRR" << std::endl;
-    yyclearin();
 }

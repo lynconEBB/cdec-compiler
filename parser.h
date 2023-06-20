@@ -50,15 +50,18 @@
     #include <iostream>
     #include <string>
     #include <vector>
-    #include "tokens.h"
+    #include <variant>
 
     // Forward Declare
+    struct SymbolInfo;
+    enum class TokenType;
+
     namespace Cd {
         class Scanner;
         class Driver;
     }
 
-#line 62 "parser.h"
+#line 65 "parser.h"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -199,7 +202,7 @@
 
 #line 5 "parser.y"
 namespace  Cd  {
-#line 203 "parser.h"
+#line 206 "parser.h"
 
 
 
@@ -418,24 +421,21 @@ namespace  Cd  {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // ID
+      char dummy1[sizeof (SymbolInfo*)];
+
       // CHAR
       // INT
       // FLOAT
       // DOUBLE
       // VOID
-      char dummy1[sizeof (TokenType)];
-
-      // CHLIT
-      char dummy2[sizeof (char)];
-
-      // FLIT
-      char dummy3[sizeof (double)];
+      char dummy2[sizeof (TokenType)];
 
       // ILIT
-      char dummy4[sizeof (int)];
-
+      // FLIT
+      // CHLIT
       // STRING
-      char dummy5[sizeof (std::string)];
+      char dummy3[sizeof (std::variant<int,double,char,std::string>)];
     };
 
     /// The size of the largest semantic type.
@@ -514,11 +514,12 @@ namespace  Cd  {
     NOT = 287,                     // NOT
     EQU = 288,                     // EQU
     REL = 289,                     // REL
-    ILIT = 290,                    // ILIT
-    FLIT = 291,                    // FLIT
-    CHLIT = 292,                   // CHLIT
-    STRING = 293,                  // STRING
-    ID = 294                       // ID
+    MINUS = 290,                   // MINUS
+    ILIT = 291,                    // ILIT
+    FLIT = 292,                    // FLIT
+    CHLIT = 293,                   // CHLIT
+    STRING = 294,                  // STRING
+    ID = 295                       // ID
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -535,7 +536,7 @@ namespace  Cd  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 40, ///< Number of tokens.
+        YYNTOKENS = 41, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -572,14 +573,26 @@ namespace  Cd  {
         S_NOT = 32,                              // NOT
         S_EQU = 33,                              // EQU
         S_REL = 34,                              // REL
-        S_ILIT = 35,                             // ILIT
-        S_FLIT = 36,                             // FLIT
-        S_CHLIT = 37,                            // CHLIT
-        S_STRING = 38,                           // STRING
-        S_ID = 39,                               // ID
-        S_YYACCEPT = 40,                         // $accept
-        S_all = 41,                              // all
-        S_type = 42                              // type
+        S_MINUS = 35,                            // MINUS
+        S_ILIT = 36,                             // ILIT
+        S_FLIT = 37,                             // FLIT
+        S_CHLIT = 38,                            // CHLIT
+        S_STRING = 39,                           // STRING
+        S_ID = 40,                               // ID
+        S_YYACCEPT = 41,                         // $accept
+        S_program = 42,                          // program
+        S_declarations = 43,                     // declarations
+        S_declaration = 44,                      // declaration
+        S_type = 45,                             // type
+        S_names = 46,                            // names
+        S_variable = 47,                         // variable
+        S_array = 48,                            // array
+        S_initialization = 49,                   // initialization
+        S_scalar_initialization = 50,            // scalar_initialization
+        S_vector_initialization = 51,            // vector_initialization
+        S_values = 52,                           // values
+        S_literal = 53,                          // literal
+        S_expression = 54                        // expression
       };
     };
 
@@ -614,6 +627,10 @@ namespace  Cd  {
       {
         switch (this->kind ())
     {
+      case symbol_kind::S_ID: // ID
+        value.move< SymbolInfo* > (std::move (that.value));
+        break;
+
       case symbol_kind::S_CHAR: // CHAR
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_FLOAT: // FLOAT
@@ -622,20 +639,11 @@ namespace  Cd  {
         value.move< TokenType > (std::move (that.value));
         break;
 
-      case symbol_kind::S_CHLIT: // CHLIT
-        value.move< char > (std::move (that.value));
-        break;
-
-      case symbol_kind::S_FLIT: // FLIT
-        value.move< double > (std::move (that.value));
-        break;
-
       case symbol_kind::S_ILIT: // ILIT
-        value.move< int > (std::move (that.value));
-        break;
-
+      case symbol_kind::S_FLIT: // FLIT
+      case symbol_kind::S_CHLIT: // CHLIT
       case symbol_kind::S_STRING: // STRING
-        value.move< std::string > (std::move (that.value));
+        value.move< std::variant<int,double,char,std::string> > (std::move (that.value));
         break;
 
       default:
@@ -660,6 +668,18 @@ namespace  Cd  {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, SymbolInfo*&& v)
+        : Base (t)
+        , value (std::move (v))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const SymbolInfo*& v)
+        : Base (t)
+        , value (v)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, TokenType&& v)
         : Base (t)
         , value (std::move (v))
@@ -672,48 +692,12 @@ namespace  Cd  {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, char&& v)
+      basic_symbol (typename Base::kind_type t, std::variant<int,double,char,std::string>&& v)
         : Base (t)
         , value (std::move (v))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const char& v)
-        : Base (t)
-        , value (v)
-      {}
-#endif
-
-#if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, double&& v)
-        : Base (t)
-        , value (std::move (v))
-      {}
-#else
-      basic_symbol (typename Base::kind_type t, const double& v)
-        : Base (t)
-        , value (v)
-      {}
-#endif
-
-#if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, int&& v)
-        : Base (t)
-        , value (std::move (v))
-      {}
-#else
-      basic_symbol (typename Base::kind_type t, const int& v)
-        : Base (t)
-        , value (v)
-      {}
-#endif
-
-#if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, std::string&& v)
-        : Base (t)
-        , value (std::move (v))
-      {}
-#else
-      basic_symbol (typename Base::kind_type t, const std::string& v)
+      basic_symbol (typename Base::kind_type t, const std::variant<int,double,char,std::string>& v)
         : Base (t)
         , value (v)
       {}
@@ -743,6 +727,10 @@ namespace  Cd  {
         // Value type destructor.
 switch (yykind)
     {
+      case symbol_kind::S_ID: // ID
+        value.template destroy< SymbolInfo* > ();
+        break;
+
       case symbol_kind::S_CHAR: // CHAR
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_FLOAT: // FLOAT
@@ -751,20 +739,11 @@ switch (yykind)
         value.template destroy< TokenType > ();
         break;
 
-      case symbol_kind::S_CHLIT: // CHLIT
-        value.template destroy< char > ();
-        break;
-
-      case symbol_kind::S_FLIT: // FLIT
-        value.template destroy< double > ();
-        break;
-
       case symbol_kind::S_ILIT: // ILIT
-        value.template destroy< int > ();
-        break;
-
+      case symbol_kind::S_FLIT: // FLIT
+      case symbol_kind::S_CHLIT: // CHLIT
       case symbol_kind::S_STRING: // STRING
-        value.template destroy< std::string > ();
+        value.template destroy< std::variant<int,double,char,std::string> > ();
         break;
 
       default:
@@ -863,8 +842,19 @@ switch (yykind)
 #if !defined _MSC_VER || defined __clang__
         YY_ASSERT (tok == token::YYEOF
                    || (token::YYerror <= tok && tok <= token::YYUNDEF)
-                   || (token::COMMA <= tok && tok <= token::REL)
-                   || tok == token::ID);
+                   || (token::COMMA <= tok && tok <= token::MINUS));
+#endif
+      }
+#if 201103L <= YY_CPLUSPLUS
+      symbol_type (int tok, SymbolInfo* v)
+        : super_type (token_kind_type (tok), std::move (v))
+#else
+      symbol_type (int tok, const SymbolInfo*& v)
+        : super_type (token_kind_type (tok), v)
+#endif
+      {
+#if !defined _MSC_VER || defined __clang__
+        YY_ASSERT (tok == token::ID);
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -880,51 +870,15 @@ switch (yykind)
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok, char v)
+      symbol_type (int tok, std::variant<int,double,char,std::string> v)
         : super_type (token_kind_type (tok), std::move (v))
 #else
-      symbol_type (int tok, const char& v)
+      symbol_type (int tok, const std::variant<int,double,char,std::string>& v)
         : super_type (token_kind_type (tok), v)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::CHLIT);
-#endif
-      }
-#if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok, double v)
-        : super_type (token_kind_type (tok), std::move (v))
-#else
-      symbol_type (int tok, const double& v)
-        : super_type (token_kind_type (tok), v)
-#endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::FLIT);
-#endif
-      }
-#if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok, int v)
-        : super_type (token_kind_type (tok), std::move (v))
-#else
-      symbol_type (int tok, const int& v)
-        : super_type (token_kind_type (tok), v)
-#endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::ILIT);
-#endif
-      }
-#if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok, std::string v)
-        : super_type (token_kind_type (tok), std::move (v))
-#else
-      symbol_type (int tok, const std::string& v)
-        : super_type (token_kind_type (tok), v)
-#endif
-      {
-#if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::STRING);
+        YY_ASSERT ((token::ILIT <= tok && tok <= token::STRING));
 #endif
       }
     };
@@ -1502,14 +1456,29 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_ILIT (int v)
+      make_MINUS ()
+      {
+        return symbol_type (token::MINUS);
+      }
+#else
+      static
+      symbol_type
+      make_MINUS ()
+      {
+        return symbol_type (token::MINUS);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_ILIT (std::variant<int,double,char,std::string> v)
       {
         return symbol_type (token::ILIT, std::move (v));
       }
 #else
       static
       symbol_type
-      make_ILIT (const int& v)
+      make_ILIT (const std::variant<int,double,char,std::string>& v)
       {
         return symbol_type (token::ILIT, v);
       }
@@ -1517,14 +1486,14 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_FLIT (double v)
+      make_FLIT (std::variant<int,double,char,std::string> v)
       {
         return symbol_type (token::FLIT, std::move (v));
       }
 #else
       static
       symbol_type
-      make_FLIT (const double& v)
+      make_FLIT (const std::variant<int,double,char,std::string>& v)
       {
         return symbol_type (token::FLIT, v);
       }
@@ -1532,14 +1501,14 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_CHLIT (char v)
+      make_CHLIT (std::variant<int,double,char,std::string> v)
       {
         return symbol_type (token::CHLIT, std::move (v));
       }
 #else
       static
       symbol_type
-      make_CHLIT (const char& v)
+      make_CHLIT (const std::variant<int,double,char,std::string>& v)
       {
         return symbol_type (token::CHLIT, v);
       }
@@ -1547,14 +1516,14 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_STRING (std::string v)
+      make_STRING (std::variant<int,double,char,std::string> v)
       {
         return symbol_type (token::STRING, std::move (v));
       }
 #else
       static
       symbol_type
-      make_STRING (const std::string& v)
+      make_STRING (const std::variant<int,double,char,std::string>& v)
       {
         return symbol_type (token::STRING, v);
       }
@@ -1562,16 +1531,16 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_ID ()
+      make_ID (SymbolInfo* v)
       {
-        return symbol_type (token::ID);
+        return symbol_type (token::ID, std::move (v));
       }
 #else
       static
       symbol_type
-      make_ID ()
+      make_ID (const SymbolInfo*& v)
       {
-        return symbol_type (token::ID);
+        return symbol_type (token::ID, v);
       }
 #endif
 
@@ -1666,7 +1635,7 @@ switch (yykind)
 
 #if YYDEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-    static const signed char yyrline_[];
+    static const unsigned char yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r) const;
     /// Print the state stack on the debug stream.
@@ -1893,9 +1862,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 5,     ///< Last index in yytable_.
-      yynnts_ = 3,  ///< Number of nonterminal symbols.
-      yyfinal_ = 8 ///< Termination state number.
+      yylast_ = 102,     ///< Last index in yytable_.
+      yynnts_ = 14,  ///< Number of nonterminal symbols.
+      yyfinal_ = 10 ///< Termination state number.
     };
 
 
@@ -1944,10 +1913,10 @@ switch (yykind)
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38,    39
+      35,    36,    37,    38,    39,    40
     };
     // Last valid token kind.
-    const int code_max = 294;
+    const int code_max = 295;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;
@@ -1965,6 +1934,10 @@ switch (yykind)
   {
     switch (this->kind ())
     {
+      case symbol_kind::S_ID: // ID
+        value.copy< SymbolInfo* > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_CHAR: // CHAR
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_FLOAT: // FLOAT
@@ -1973,20 +1946,11 @@ switch (yykind)
         value.copy< TokenType > (YY_MOVE (that.value));
         break;
 
-      case symbol_kind::S_CHLIT: // CHLIT
-        value.copy< char > (YY_MOVE (that.value));
-        break;
-
-      case symbol_kind::S_FLIT: // FLIT
-        value.copy< double > (YY_MOVE (that.value));
-        break;
-
       case symbol_kind::S_ILIT: // ILIT
-        value.copy< int > (YY_MOVE (that.value));
-        break;
-
+      case symbol_kind::S_FLIT: // FLIT
+      case symbol_kind::S_CHLIT: // CHLIT
       case symbol_kind::S_STRING: // STRING
-        value.copy< std::string > (YY_MOVE (that.value));
+        value.copy< std::variant<int,double,char,std::string> > (YY_MOVE (that.value));
         break;
 
       default:
@@ -2020,6 +1984,10 @@ switch (yykind)
     super_type::move (s);
     switch (this->kind ())
     {
+      case symbol_kind::S_ID: // ID
+        value.move< SymbolInfo* > (YY_MOVE (s.value));
+        break;
+
       case symbol_kind::S_CHAR: // CHAR
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_FLOAT: // FLOAT
@@ -2028,20 +1996,11 @@ switch (yykind)
         value.move< TokenType > (YY_MOVE (s.value));
         break;
 
-      case symbol_kind::S_CHLIT: // CHLIT
-        value.move< char > (YY_MOVE (s.value));
-        break;
-
-      case symbol_kind::S_FLIT: // FLIT
-        value.move< double > (YY_MOVE (s.value));
-        break;
-
       case symbol_kind::S_ILIT: // ILIT
-        value.move< int > (YY_MOVE (s.value));
-        break;
-
+      case symbol_kind::S_FLIT: // FLIT
+      case symbol_kind::S_CHLIT: // CHLIT
       case symbol_kind::S_STRING: // STRING
-        value.move< std::string > (YY_MOVE (s.value));
+        value.move< std::variant<int,double,char,std::string> > (YY_MOVE (s.value));
         break;
 
       default:
@@ -2110,7 +2069,7 @@ switch (yykind)
 
 #line 5 "parser.y"
 } //  Cd 
-#line 2114 "parser.h"
+#line 2073 "parser.h"
 
 
 

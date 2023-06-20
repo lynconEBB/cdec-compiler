@@ -1,16 +1,13 @@
-#ifndef TOKENS_HEADER
-#define TOKENS_HEADER
+#ifndef SYMTABLE_H
+#define SYMTABLE_H
 
+#include <unordered_map>
 #include <string>
 #include <vector>
+#include "parser.h"
+#include <variant>
 
-union Value
-{
-    int intVal;
-    double floatVal;
-    char charVal;
-    std::string stringVal;
-};
+using Value = std::variant<int,float,char,std::string>;
 
 enum class TokenType {
     UNDEFINED,
@@ -26,37 +23,46 @@ enum class TokenType {
 struct Parameter {
     TokenType type;
     std::string name;
+    Value value;
     bool byReference;
 };
 
-struct StoredValue {
-    int ival;
-    double fval;
-    char* sval;
-};
-
 struct SymbolInfo {
-    int scope = 0;
     std::string name;
-
-    TokenType type = TokenType::VOID;
-
-    StoredValue value; 
+    Cd::Parser::token_type classType;
+    TokenType type = TokenType::UNDEFINED;
     std::vector<uint32_t> references;
 
+    Value value; 
+
     // Valores do Array
-    std::vector<StoredValue> arrayValues;
+    std::vector<Value> arrayValues;
     // Parametros caso seja tipo função
     std::vector<Parameter> parameters;
     // Para retorno de função e tipo do array
     TokenType aditionalType;
 
-    SymbolInfo() {}
-
     SymbolInfo(const std::string& name, uint32_t firstReference):
             name(name), references({firstReference}), type(TokenType::VOID) {}
 };
 
-extern uint32_t lineNumber;
+using SymIterator = std::unordered_map<std::string, SymbolInfo*>::iterator;
+
+namespace Cd
+{
+
+class SymbolTable {
+public:
+    void insert();
+    void insertLiteral();
+    void insertKeyword();
+    void inserIdentifier();
+    SymbolInfo* find(const std::string& name);
+
+private:
+    std::unordered_map<std::string, SymbolInfo*> symbolTable;
+};
+
+}
 
 #endif

@@ -1,5 +1,5 @@
 %skeleton "lalr1.cc" /* -*- C++ -*- */
-%require "3.0"
+%require "3.2"
 %defines
 %define api.parser.class { Parser }
 %define api.namespace { Cd }
@@ -14,9 +14,12 @@
     #include <iostream>
     #include <string>
     #include <vector>
-    #include "tokens.h"
+    #include <variant>
 
     // Forward Declare
+    struct SymbolInfo;
+    enum class TokenType;
+
     namespace Cd {
         class Scanner;
         class Driver;
@@ -45,17 +48,45 @@
 %token<TokenType> CHAR INT FLOAT DOUBLE VOID 
 %token COMMA LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI ASSIGN REFER
 %token IF ELSE WHILE FOR CONTINUE BREAK RETURN
-%token ADD MUL DIV INC DEC OR AND NOT EQU REL 
-%token<int> ILIT 
-%token<double> FLIT
-%token<char> CHLIT 
-%token<std::string> STRING
-%token ID
+%token ADD MUL DIV INC DEC OR AND NOT EQU REL MINUS
+%token<std::variant<int,double,char,std::string>> ILIT FLIT CHLIT STRING
+%token<SymbolInfo*> ID
 
-%start all
+%left COMMA
+%right ASSIGN
+%left OR
+%left AND
+%left EQU
+%left REL
+%left ADD
+%left MUL DIV
+%right NOT INC REFER MINUS
+%left LPAREN RPAREN LBRACK RBRACK
+
+%start program
 
 %%
-all: type
+program: 
+    declarations
+;
+
+declarations:
+    declarations declaration
+    {
+
+    }
+    | declaration
+    {
+
+    }
+;
+
+declaration:
+    type names SEMI 
+    {
+
+    }
+;
 
 type:
       INT 
@@ -63,9 +94,136 @@ type:
     | FLOAT
     | DOUBLE
     | VOID
-    | %empty
 ;
 
+names:
+    names COMMA variable
+    {
+
+    }
+    | names COMMA initialization
+    {
+
+    }
+    | variable
+    {
+
+    }
+    | initialization
+    {
+
+    }
+;
+
+variable:
+    ID
+    {
+
+    }
+    | ID array
+    {
+
+    }
+;
+
+array:
+    LBRACK expression RBRACK
+    {
+        
+    }
+    | LBRACK ILIT RBRACK
+    {
+
+    }
+;
+
+initialization:
+    scalar_initialization
+    { }
+    | vector_initialization
+    { }
+;
+
+scalar_initialization:
+    ID ASSIGN literal
+    {
+
+    }
+;
+
+vector_initialization:
+    ID array ASSIGN LBRACE values RBRACE
+    {
+
+    }
+;
+
+values:
+    values COMMA literal
+    {
+
+    }
+    | literal
+    {
+
+    }
+;
+
+literal:
+    ILIT
+    { }
+    | FLIT
+    { }
+    | CHLIT
+    { }
+;
+
+expression:
+    expression ADD expression
+	{ 
+	}
+	| expression MUL expression
+	{
+	}
+	| expression DIV expression
+	{
+	}
+	| ID INC
+	{
+		/* increment */
+	}
+	| INC ID
+	{
+		/* increment */
+	}
+	| expression OR expression
+	{
+	}
+	| expression AND expression
+	{
+	}
+	| NOT expression
+	{
+	}
+	| expression EQU expression
+	{
+	}
+	| expression REL expression
+	{
+	}
+	| LPAREN expression RPAREN
+	{
+	}
+	| variable
+	{ 
+	}
+	| literal
+	{
+	}
+	| ADD literal %prec MINUS
+	{
+	}
+;
 %%
 
 void Cd::Parser::error(const std::string& message) {
@@ -76,5 +234,4 @@ void Cd::Parser::error(const std::string& message) {
 void Cd::Parser::report_syntax_error (const context& ctx) const
 {
     std::cout << "CURRR" << std::endl;
-    yyclearin();
 }
