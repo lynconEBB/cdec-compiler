@@ -143,7 +143,7 @@ names:
 variable:
     ID
     {
-        
+          
     }
     | ID array
     {
