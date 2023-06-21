@@ -15,6 +15,7 @@
     #include <string>
     #include <vector>
     #include <variant>
+    #include "tree.h"
 
     // Forward Declare
     struct SymbolInfo;
@@ -43,7 +44,7 @@
 %parse-param { Cd::Scanner& scanner }
 %parse-param { Cd::Driver& driver }
 %define parse.trace
-%define parse.error custom
+%define parse.error verbose
 
 %token<TokenType> CHAR INT FLOAT DOUBLE VOID 
 %token COMMA LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI ASSIGN REFER
@@ -63,43 +64,67 @@
 %right NOT INC REFER MINUS
 %left LPAREN RPAREN LBRACK RBRACK
 
+%type<Node*> declaration declarations
+%type<Node*> literal
+%type<Node*> type
+
 %start program
 
 %%
 program: 
-    declarations
+    declarations 
+    {
+        Node* node = new Node("program");
+        node->addChild($1);
+        driver.printAST(node);
+    }
 ;
 
 declarations:
     declarations declaration
     {
-
+        Node* node = new Node("declarations");
+        node->addChild($1);
+        node->addChild($2);
+        $$ = node;
     }
     | declaration
     {
-
+        Node* node = new Node("declarations");
+        node->addChild($1);
+        $$ = node;
     }
 ;
 
 declaration:
     type names SEMI 
     {
+        $$ = new Node("declaration");
+        $$->type = $1->type;
 
+    }
+    | error SEMI
+    {
+        // TODO: TEM Q CORRIGIR(retornar um variant com erro?)
+        return nullptr;    
     }
 ;
 
 type:
-      INT 
-    | CHAR
-    | FLOAT
-    | DOUBLE
-    | VOID
+    INT 
+    { 
+        $$ = new Node("type", $1); 
+    }
+    | CHAR { $$ = new Node("type", $1); }  
+    | FLOAT { $$ = new Node("type", $1); }
+    | DOUBLE { $$ = new Node("type", $1); }
 ;
 
 names:
     names COMMA variable
     {
-
+        $$ = new Node("names");
+        $$->addChild($1, $);
     }
     | names COMMA initialization
     {
@@ -118,7 +143,7 @@ names:
 variable:
     ID
     {
-
+        
     }
     | ID array
     {
@@ -145,7 +170,7 @@ initialization:
 ;
 
 scalar_initialization:
-    ID ASSIGN literal
+    ID ASSIGN expression
     {
 
     }
@@ -171,16 +196,32 @@ values:
 
 literal:
     ILIT
-    { }
+    { 
+        Node* node = new Node();     
+        node->type = TokenType::INT;
+        node->value = std::get<int>($1);
+        $$ = node;
+    }
     | FLIT
-    { }
+    {
+        Node* node = new Node();     
+        node->type = TokenType::REAL;
+        node->value = std::get<double>($1);
+        $$ = node;
+    }
     | CHLIT
-    { }
+    {
+        Node* node = new Node();     
+        node->type = TokenType::CHAR;
+        node->value = std::get<char>($1);
+        $$ = node;
+    }
 ;
 
 expression:
     expression ADD expression
 	{ 
+
 	}
 	| expression MUL expression
 	{
@@ -216,12 +257,11 @@ expression:
 	}
 	| variable
 	{ 
+
 	}
 	| literal
 	{
-	}
-	| ADD literal %prec MINUS
-	{
+
 	}
 ;
 %%
@@ -231,7 +271,7 @@ void Cd::Parser::error(const std::string& message) {
     std::cout << message << std::endl;
 }
 
-void Cd::Parser::report_syntax_error (const context& ctx) const
-{
-    std::cout << "CURRR" << std::endl;
-}
+//void Cd::Parser::report_syntax_error (const context& ctx) const
+//{
+//    std::cout << "CURRR" << std::endl;
+//}

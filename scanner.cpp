@@ -974,7 +974,8 @@ YY_RULE_SETUP
 case 43:
 YY_RULE_SETUP
 #line 97 "scanner.l"
-{ return Cd::Parser::make_ID(new SymbolInfo(yytext, m_driver.lineNumber)); }
+{ 
+							return Cd::Parser::make_ID(new SymbolInfo(yytext, m_driver.lineNumber)); }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
@@ -1014,7 +1015,7 @@ case 50:
 YY_RULE_SETUP
 #line 111 "scanner.l"
 { 
-							return Cd::Parser::make_CHLIT(yytext[0]);
+							return Cd::Parser::make_CHLIT(yytext[1]);
  						}
 	YY_BREAK
 case 51:
@@ -1054,7 +1055,7 @@ YY_RULE_SETUP
 #line 127 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1058 "scanner.cpp"
+#line 1059 "scanner.cpp"
 
 	case YY_END_OF_BUFFER:
 		{

@@ -7,6 +7,7 @@
 #include "parser.h"
 #include <variant>
 
+
 using Value = std::variant<int,float,char,std::string>;
 
 enum class TokenType {
@@ -29,7 +30,7 @@ struct Parameter {
 
 struct SymbolInfo {
     std::string name;
-    Cd::Parser::token_type classType;
+    Cd::Parser::symbol_type classType;
     TokenType type = TokenType::UNDEFINED;
     std::vector<uint32_t> references;
 
@@ -53,14 +54,17 @@ namespace Cd
 
 class SymbolTable {
 public:
+    SymbolTable(Cd::Driver& driver) : m_driver(driver) { }
+
     void insert();
-    void insertLiteral();
+    void insertLiteral(std::string name, Cd::Parser::symbol_type classType);
     void insertKeyword();
     void inserIdentifier();
     SymbolInfo* find(const std::string& name);
 
 private:
     std::unordered_map<std::string, SymbolInfo*> symbolTable;
+    Cd::Driver& m_driver;
 };
 
 }

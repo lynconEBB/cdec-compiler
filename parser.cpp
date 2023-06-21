@@ -35,7 +35,7 @@
 // private implementation details that can be changed or removed.
 
 // "%code top" blocks.
-#line 31 "parser.y"
+#line 32 "parser.y"
 
     #include <iostream>
     #include "scanner.h"
@@ -196,6 +196,13 @@ namespace  Cd  {
   {
     switch (that.kind ())
     {
+      case symbol_kind::S_declarations: // declarations
+      case symbol_kind::S_declaration: // declaration
+      case symbol_kind::S_type: // type
+      case symbol_kind::S_literal: // literal
+        value.YY_MOVE_OR_COPY< Node* > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_ID: // ID
         value.YY_MOVE_OR_COPY< SymbolInfo* > (YY_MOVE (that.value));
         break;
@@ -230,6 +237,13 @@ namespace  Cd  {
   {
     switch (that.kind ())
     {
+      case symbol_kind::S_declarations: // declarations
+      case symbol_kind::S_declaration: // declaration
+      case symbol_kind::S_type: // type
+      case symbol_kind::S_literal: // literal
+        value.move< Node* > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_ID: // ID
         value.move< SymbolInfo* > (YY_MOVE (that.value));
         break;
@@ -264,6 +278,13 @@ namespace  Cd  {
     state = that.state;
     switch (that.kind ())
     {
+      case symbol_kind::S_declarations: // declarations
+      case symbol_kind::S_declaration: // declaration
+      case symbol_kind::S_type: // type
+      case symbol_kind::S_literal: // literal
+        value.copy< Node* > (that.value);
+        break;
+
       case symbol_kind::S_ID: // ID
         value.copy< SymbolInfo* > (that.value);
         break;
@@ -296,6 +317,13 @@ namespace  Cd  {
     state = that.state;
     switch (that.kind ())
     {
+      case symbol_kind::S_declarations: // declarations
+      case symbol_kind::S_declaration: // declaration
+      case symbol_kind::S_type: // type
+      case symbol_kind::S_literal: // literal
+        value.move< Node* > (that.value);
+        break;
+
       case symbol_kind::S_ID: // ID
         value.move< SymbolInfo* > (that.value);
         break;
@@ -569,6 +597,13 @@ namespace  Cd  {
          when using variants.  */
       switch (yyr1_[yyn])
     {
+      case symbol_kind::S_declarations: // declarations
+      case symbol_kind::S_declaration: // declaration
+      case symbol_kind::S_type: // type
+      case symbol_kind::S_literal: // literal
+        yylhs.value.emplace< Node* > ();
+        break;
+
       case symbol_kind::S_ID: // ID
         yylhs.value.emplace< SymbolInfo* > ();
         break;
@@ -602,258 +637,318 @@ namespace  Cd  {
         {
           switch (yyn)
             {
+  case 2: // program: declarations
+#line 76 "parser.y"
+    {
+        Node* node = new Node("program");
+        node->addChild(yystack_[0].value.as < Node* > ());
+        driver.printAST(node);
+    }
+#line 648 "parser.cpp"
+    break;
+
   case 3: // declarations: declarations declaration
-#line 75 "parser.y"
+#line 85 "parser.y"
     {
-
-    }
-#line 611 "parser.cpp"
-    break;
-
-  case 4: // declarations: declaration
-#line 79 "parser.y"
-    {
-
-    }
-#line 619 "parser.cpp"
-    break;
-
-  case 5: // declaration: type names SEMI
-#line 86 "parser.y"
-    {
-
-    }
-#line 627 "parser.cpp"
-    break;
-
-  case 11: // names: names COMMA variable
-#line 101 "parser.y"
-    {
-
-    }
-#line 635 "parser.cpp"
-    break;
-
-  case 12: // names: names COMMA initialization
-#line 105 "parser.y"
-    {
-
-    }
-#line 643 "parser.cpp"
-    break;
-
-  case 13: // names: variable
-#line 109 "parser.y"
-    {
-
-    }
-#line 651 "parser.cpp"
-    break;
-
-  case 14: // names: initialization
-#line 113 "parser.y"
-    {
-
+        Node* node = new Node("declarations");
+        node->addChild(yystack_[1].value.as < Node* > ());
+        node->addChild(yystack_[0].value.as < Node* > ());
+        yylhs.value.as < Node* > () = node;
     }
 #line 659 "parser.cpp"
     break;
 
-  case 15: // variable: ID
-#line 120 "parser.y"
+  case 4: // declarations: declaration
+#line 92 "parser.y"
     {
+        Node* node = new Node("declarations");
+        node->addChild(yystack_[0].value.as < Node* > ());
+        yylhs.value.as < Node* > () = node;
+    }
+#line 669 "parser.cpp"
+    break;
+
+  case 5: // declaration: type names SEMI
+#line 101 "parser.y"
+    {
+        yylhs.value.as < Node* > () = new Node("declaration");
+        yylhs.value.as < Node* > ()->type = yystack_[2].value.as < Node* > ()->type;
 
     }
-#line 667 "parser.cpp"
+#line 679 "parser.cpp"
     break;
 
-  case 16: // variable: ID array
-#line 124 "parser.y"
+  case 6: // declaration: error SEMI
+#line 107 "parser.y"
     {
-
+        yyclearin();
     }
-#line 675 "parser.cpp"
+#line 687 "parser.cpp"
     break;
 
-  case 17: // array: LBRACK expression RBRACK
-#line 131 "parser.y"
-    {
-        
-    }
-#line 683 "parser.cpp"
+  case 7: // type: INT
+#line 113 "parser.y"
+          { yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); }
+#line 693 "parser.cpp"
     break;
 
-  case 18: // array: LBRACK ILIT RBRACK
-#line 135 "parser.y"
-    {
-
-    }
-#line 691 "parser.cpp"
+  case 8: // type: CHAR
+#line 114 "parser.y"
+           { yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); }
+#line 699 "parser.cpp"
     break;
 
-  case 19: // initialization: scalar_initialization
-#line 142 "parser.y"
-    { }
-#line 697 "parser.cpp"
+  case 9: // type: FLOAT
+#line 115 "parser.y"
+            { yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); }
+#line 705 "parser.cpp"
     break;
 
-  case 20: // initialization: vector_initialization
-#line 144 "parser.y"
-    { }
-#line 703 "parser.cpp"
-    break;
-
-  case 21: // scalar_initialization: ID ASSIGN literal
-#line 149 "parser.y"
-    {
-
-    }
+  case 10: // type: DOUBLE
+#line 116 "parser.y"
+             { yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); }
 #line 711 "parser.cpp"
     break;
 
-  case 22: // vector_initialization: ID array ASSIGN LBRACE values RBRACE
-#line 156 "parser.y"
+  case 11: // names: names COMMA variable
+#line 121 "parser.y"
     {
 
     }
 #line 719 "parser.cpp"
     break;
 
-  case 23: // values: values COMMA literal
-#line 163 "parser.y"
+  case 12: // names: names COMMA initialization
+#line 125 "parser.y"
     {
 
     }
 #line 727 "parser.cpp"
     break;
 
-  case 24: // values: literal
-#line 167 "parser.y"
+  case 13: // names: variable
+#line 129 "parser.y"
     {
 
     }
 #line 735 "parser.cpp"
     break;
 
-  case 25: // literal: ILIT
-#line 174 "parser.y"
-    { }
-#line 741 "parser.cpp"
+  case 14: // names: initialization
+#line 133 "parser.y"
+    {
+
+    }
+#line 743 "parser.cpp"
     break;
 
-  case 26: // literal: FLIT
-#line 176 "parser.y"
-    { }
-#line 747 "parser.cpp"
+  case 15: // variable: ID
+#line 140 "parser.y"
+    {
+
+    }
+#line 751 "parser.cpp"
     break;
 
-  case 27: // literal: CHLIT
-#line 178 "parser.y"
-    { }
-#line 753 "parser.cpp"
+  case 16: // variable: ID array
+#line 144 "parser.y"
+    {
+
+    }
+#line 759 "parser.cpp"
     break;
 
-  case 28: // expression: expression ADD expression
-#line 183 "parser.y"
-        { 
-	}
-#line 760 "parser.cpp"
-    break;
-
-  case 29: // expression: expression MUL expression
-#line 186 "parser.y"
-        {
-	}
+  case 17: // array: LBRACK expression RBRACK
+#line 151 "parser.y"
+    {
+        
+    }
 #line 767 "parser.cpp"
     break;
 
-  case 30: // expression: expression DIV expression
-#line 189 "parser.y"
-        {
-	}
-#line 774 "parser.cpp"
+  case 18: // array: LBRACK ILIT RBRACK
+#line 155 "parser.y"
+    {
+
+    }
+#line 775 "parser.cpp"
     break;
 
-  case 31: // expression: ID INC
-#line 192 "parser.y"
-        {
-		/* increment */
-	}
-#line 782 "parser.cpp"
+  case 19: // initialization: scalar_initialization
+#line 162 "parser.y"
+    { }
+#line 781 "parser.cpp"
     break;
 
-  case 32: // expression: INC ID
-#line 196 "parser.y"
-        {
-		/* increment */
-	}
-#line 790 "parser.cpp"
+  case 20: // initialization: vector_initialization
+#line 164 "parser.y"
+    { }
+#line 787 "parser.cpp"
     break;
 
-  case 33: // expression: expression OR expression
-#line 200 "parser.y"
-        {
-	}
-#line 797 "parser.cpp"
+  case 21: // scalar_initialization: ID ASSIGN expression
+#line 169 "parser.y"
+    {
+
+    }
+#line 795 "parser.cpp"
     break;
 
-  case 34: // expression: expression AND expression
-#line 203 "parser.y"
-        {
-	}
-#line 804 "parser.cpp"
+  case 22: // vector_initialization: ID array ASSIGN LBRACE values RBRACE
+#line 176 "parser.y"
+    {
+
+    }
+#line 803 "parser.cpp"
     break;
 
-  case 35: // expression: NOT expression
-#line 206 "parser.y"
-        {
-	}
+  case 23: // values: values COMMA literal
+#line 183 "parser.y"
+    {
+
+    }
 #line 811 "parser.cpp"
     break;
 
-  case 36: // expression: expression EQU expression
-#line 209 "parser.y"
+  case 24: // values: literal
+#line 187 "parser.y"
+    {
+
+    }
+#line 819 "parser.cpp"
+    break;
+
+  case 25: // literal: ILIT
+#line 194 "parser.y"
+    { 
+        Node* node = new Node();     
+        node->type = TokenType::INT;
+        node->value = std::get<int>(yystack_[0].value.as < std::variant<int,double,char,std::string> > ());
+        yylhs.value.as < Node* > () = node;
+    }
+#line 830 "parser.cpp"
+    break;
+
+  case 26: // literal: FLIT
+#line 201 "parser.y"
+    {
+        Node* node = new Node();     
+        node->type = TokenType::REAL;
+        node->value = std::get<double>(yystack_[0].value.as < std::variant<int,double,char,std::string> > ());
+        yylhs.value.as < Node* > () = node;
+    }
+#line 841 "parser.cpp"
+    break;
+
+  case 27: // literal: CHLIT
+#line 208 "parser.y"
+    {
+        Node* node = new Node();     
+        node->type = TokenType::CHAR;
+        node->value = std::get<char>(yystack_[0].value.as < std::variant<int,double,char,std::string> > ());
+        yylhs.value.as < Node* > () = node;
+    }
+#line 852 "parser.cpp"
+    break;
+
+  case 28: // expression: expression ADD expression
+#line 218 "parser.y"
+        { 
+
+	}
+#line 860 "parser.cpp"
+    break;
+
+  case 29: // expression: expression MUL expression
+#line 222 "parser.y"
         {
 	}
-#line 818 "parser.cpp"
+#line 867 "parser.cpp"
+    break;
+
+  case 30: // expression: expression DIV expression
+#line 225 "parser.y"
+        {
+	}
+#line 874 "parser.cpp"
+    break;
+
+  case 31: // expression: ID INC
+#line 228 "parser.y"
+        {
+		/* increment */
+	}
+#line 882 "parser.cpp"
+    break;
+
+  case 32: // expression: INC ID
+#line 232 "parser.y"
+        {
+		/* increment */
+	}
+#line 890 "parser.cpp"
+    break;
+
+  case 33: // expression: expression OR expression
+#line 236 "parser.y"
+        {
+	}
+#line 897 "parser.cpp"
+    break;
+
+  case 34: // expression: expression AND expression
+#line 239 "parser.y"
+        {
+	}
+#line 904 "parser.cpp"
+    break;
+
+  case 35: // expression: NOT expression
+#line 242 "parser.y"
+        {
+	}
+#line 911 "parser.cpp"
+    break;
+
+  case 36: // expression: expression EQU expression
+#line 245 "parser.y"
+        {
+	}
+#line 918 "parser.cpp"
     break;
 
   case 37: // expression: expression REL expression
-#line 212 "parser.y"
+#line 248 "parser.y"
         {
 	}
-#line 825 "parser.cpp"
+#line 925 "parser.cpp"
     break;
 
   case 38: // expression: LPAREN expression RPAREN
-#line 215 "parser.y"
+#line 251 "parser.y"
         {
 	}
-#line 832 "parser.cpp"
+#line 932 "parser.cpp"
     break;
 
   case 39: // expression: variable
-#line 218 "parser.y"
+#line 254 "parser.y"
         { 
+
 	}
-#line 839 "parser.cpp"
+#line 940 "parser.cpp"
     break;
 
   case 40: // expression: literal
-#line 221 "parser.y"
+#line 258 "parser.y"
         {
-	}
-#line 846 "parser.cpp"
-    break;
 
-  case 41: // expression: ADD literal
-#line 224 "parser.y"
-        {
 	}
-#line 853 "parser.cpp"
+#line 948 "parser.cpp"
     break;
 
 
-#line 857 "parser.cpp"
+#line 952 "parser.cpp"
 
             default:
               break;
@@ -886,7 +981,8 @@ namespace  Cd  {
       {
         ++yynerrs_;
         context yyctx (*this, yyla);
-        report_syntax_error (yyctx);
+        std::string msg = yysyntax_error_ (yyctx);
+        error (YY_MOVE (msg));
       }
 
 
@@ -1026,22 +1122,50 @@ namespace  Cd  {
     error (yyexc.what ());
   }
 
-  const char *
+  /* Return YYSTR after stripping away unnecessary quotes and
+     backslashes, so that it's suitable for yyerror.  The heuristic is
+     that double-quoting is unnecessary unless the string contains an
+     apostrophe, a comma, or backslash (other than backslash-backslash).
+     YYSTR is taken from yytname.  */
+  std::string
+   Parser ::yytnamerr_ (const char *yystr)
+  {
+    if (*yystr == '"')
+      {
+        std::string yyr;
+        char const *yyp = yystr;
+
+        for (;;)
+          switch (*++yyp)
+            {
+            case '\'':
+            case ',':
+              goto do_not_strip_quotes;
+
+            case '\\':
+              if (*++yyp != '\\')
+                goto do_not_strip_quotes;
+              else
+                goto append;
+
+            append:
+            default:
+              yyr += *yyp;
+              break;
+
+            case '"':
+              return yyr;
+            }
+      do_not_strip_quotes: ;
+      }
+
+    return yystr;
+  }
+
+  std::string
    Parser ::symbol_name (symbol_kind_type yysymbol)
   {
-    static const char *const yy_sname[] =
-    {
-    "end of file", "error", "invalid token", "CHAR", "INT", "FLOAT",
-  "DOUBLE", "VOID", "COMMA", "LPAREN", "RPAREN", "LBRACK", "RBRACK",
-  "LBRACE", "RBRACE", "SEMI", "ASSIGN", "REFER", "IF", "ELSE", "WHILE",
-  "FOR", "CONTINUE", "BREAK", "RETURN", "ADD", "MUL", "DIV", "INC", "DEC",
-  "OR", "AND", "NOT", "EQU", "REL", "MINUS", "ILIT", "FLIT", "CHLIT",
-  "STRING", "ID", "$accept", "program", "declarations", "declaration",
-  "type", "names", "variable", "array", "initialization",
-  "scalar_initialization", "vector_initialization", "values", "literal",
-  "expression", YY_NULLPTR
-    };
-    return yy_sname[yysymbol];
+    return yytnamerr_ (yytname_[yysymbol]);
   }
 
 
@@ -1091,126 +1215,222 @@ namespace  Cd  {
 
 
 
+  int
+   Parser ::yy_syntax_error_arguments_ (const context& yyctx,
+                                                 symbol_kind_type yyarg[], int yyargn) const
+  {
+    /* There are many possibilities here to consider:
+       - If this state is a consistent state with a default action, then
+         the only way this function was invoked is if the default action
+         is an error action.  In that case, don't check for expected
+         tokens because there are none.
+       - The only way there can be no lookahead present (in yyla) is
+         if this state is a consistent state with a default action.
+         Thus, detecting the absence of a lookahead is sufficient to
+         determine that there is no unexpected or expected token to
+         report.  In that case, just report a simple "syntax error".
+       - Don't assume there isn't a lookahead just because this state is
+         a consistent state with a default action.  There might have
+         been a previous inconsistent state, consistent state with a
+         non-default action, or user semantic action that manipulated
+         yyla.  (However, yyla is currently not documented for users.)
+       - Of course, the expected token list depends on states to have
+         correct lookahead information, and it depends on the parser not
+         to perform extra reductions after fetching a lookahead from the
+         scanner and before detecting a syntax error.  Thus, state merging
+         (from LALR or IELR) and default reductions corrupt the expected
+         token list.  However, the list is correct for canonical LR with
+         one exception: it will still contain any token that will not be
+         accepted due to an error action in a later state.
+    */
+
+    if (!yyctx.lookahead ().empty ())
+      {
+        if (yyarg)
+          yyarg[0] = yyctx.token ();
+        int yyn = yyctx.expected_tokens (yyarg ? yyarg + 1 : yyarg, yyargn - 1);
+        return yyn + 1;
+      }
+    return 0;
+  }
+
+  // Generate an error message.
+  std::string
+   Parser ::yysyntax_error_ (const context& yyctx) const
+  {
+    // Its maximum.
+    enum { YYARGS_MAX = 5 };
+    // Arguments of yyformat.
+    symbol_kind_type yyarg[YYARGS_MAX];
+    int yycount = yy_syntax_error_arguments_ (yyctx, yyarg, YYARGS_MAX);
+
+    char const* yyformat = YY_NULLPTR;
+    switch (yycount)
+      {
+#define YYCASE_(N, S)                         \
+        case N:                               \
+          yyformat = S;                       \
+        break
+      default: // Avoid compiler warnings.
+        YYCASE_ (0, YY_("syntax error"));
+        YYCASE_ (1, YY_("syntax error, unexpected %s"));
+        YYCASE_ (2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_ (3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_ (4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_ (5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+#undef YYCASE_
+      }
+
+    std::string yyres;
+    // Argument number.
+    std::ptrdiff_t yyi = 0;
+    for (char const* yyp = yyformat; *yyp; ++yyp)
+      if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
+        {
+          yyres += symbol_name (yyarg[yyi++]);
+          ++yyp;
+        }
+      else
+        yyres += *yyp;
+    return yyres;
+  }
 
 
-  const signed char  Parser ::yypact_ninf_ = -27;
+  const signed char  Parser ::yypact_ninf_ = -49;
 
-  const signed char  Parser ::yytable_ninf_ = -1;
+  const signed char  Parser ::yytable_ninf_ = -3;
 
   const signed char
    Parser ::yypact_[] =
   {
-      95,   -27,   -27,   -27,   -27,   -27,    10,    95,   -27,   -26,
-     -27,   -27,     2,    -4,   -27,   -27,   -27,   -27,    -8,   -11,
-       6,   -26,   -27,    12,   -11,   -17,    12,    21,   -27,   -27,
-      -9,   -27,   -27,    53,   -27,   -27,    23,   -27,   -27,    37,
-     -27,   -27,   -27,   -27,   -27,   -27,   -27,    12,    12,    12,
-      12,    12,    12,    12,   -11,   -27,    27,   -27,   -27,    63,
-      48,   -18,    16,    -2,   -27,   -11,   -27,   -27
+     100,    10,   -49,   -49,   -49,   -49,    46,    94,   -49,     7,
+     -49,   -49,   -49,    23,    -5,   -49,   -49,   -49,   -49,     5,
+      12,    40,     7,   -49,    12,    17,    12,    48,   -49,   -49,
+     -10,   -49,   -49,    39,   -49,    49,    50,   -49,   -49,    28,
+     -49,   -49,   -49,   -49,   -49,   -49,    12,    12,    12,    12,
+      12,    12,    12,   -29,   -49,     9,   -49,   -49,   -14,    59,
+      62,    -3,    63,   -49,   -29,   -49,   -49
   };
 
   const signed char
    Parser ::yydefact_[] =
   {
-       0,     7,     6,     8,     9,    10,     0,     2,     4,     0,
-       1,     3,    15,     0,    13,    14,    19,    20,     0,     0,
-      16,     0,     5,     0,     0,     0,     0,    25,    26,    27,
+       0,     0,     8,     7,     9,    10,     0,     0,     4,     0,
+       6,     1,     3,    15,     0,    13,    14,    19,    20,     0,
+       0,    16,     0,     5,     0,     0,     0,    25,    26,    27,
       15,    39,    40,     0,    25,    21,     0,    11,    12,     0,
-      41,    32,    35,    18,    31,    16,    17,     0,     0,     0,
-       0,     0,     0,     0,     0,    38,    28,    29,    30,    33,
-      34,    36,    37,     0,    24,     0,    22,    23
+      32,    35,    18,    31,    16,    17,     0,     0,     0,     0,
+       0,     0,     0,     0,    38,    28,    29,    30,    33,    34,
+      36,    37,     0,    24,     0,    22,    23
   };
 
   const signed char
    Parser ::yypgoto_[] =
   {
-     -27,   -27,   -27,    31,   -27,   -27,    -6,     9,    24,   -27,
-     -27,   -27,   -19,     8
+     -49,   -49,   -49,    60,   -49,   -49,    -7,    38,    56,   -49,
+     -49,   -49,   -48,   -20
   };
 
   const signed char
    Parser ::yydefgoto_[] =
   {
-       0,     6,     7,     8,     9,    13,    31,    20,    15,    16,
-      17,    63,    32,    33
+       0,     6,     7,     8,     9,    14,    31,    21,    16,    17,
+      18,    62,    32,    33
   };
 
   const signed char
    Parser ::yytable_[] =
   {
-      35,    23,    18,    14,    21,    40,    65,    47,    48,    49,
-      10,    22,    66,    18,    12,    37,    53,    24,    19,    44,
-      25,    23,    36,    41,    26,    34,    28,    29,    27,    28,
-      29,    39,    30,    43,    42,    64,    54,    24,    11,    45,
-      25,    47,    48,    49,    26,    38,    67,    55,    34,    28,
-      29,     0,    30,    48,    49,    56,    57,    58,    59,    60,
-      61,    62,    47,    48,    49,    46,     0,    50,    51,     0,
-      52,    53,     0,    47,    48,    49,     0,     0,    47,    48,
-      49,    52,    53,    50,    51,     0,    52,    53,    47,    48,
-      49,     0,     0,     0,    51,     0,    52,    53,     1,     2,
-       3,     4,     5
+      35,    19,    15,    22,    39,    63,    41,    34,    28,    29,
+      23,    46,    47,    48,    24,    37,    66,    50,    43,    51,
+      52,    24,    46,    47,    48,    10,    55,    56,    57,    58,
+      59,    60,    61,    25,    19,    47,    48,    26,    54,    20,
+      25,    27,    28,    29,    26,    30,    11,    13,    34,    28,
+      29,    45,    30,    46,    47,    48,    36,    40,    49,    50,
+      42,    51,    52,    53,    46,    47,    48,    12,    44,    49,
+      50,    64,    51,    52,    46,    47,    48,    65,    38,    49,
+      50,     0,    51,    52,    46,    47,    48,    46,    47,    48,
+       0,     0,    51,    52,    -2,     1,    52,     2,     3,     4,
+       5,     1,     0,     2,     3,     4,     5
   };
 
   const signed char
    Parser ::yycheck_[] =
   {
-      19,     9,    11,     9,     8,    24,     8,    25,    26,    27,
-       0,    15,    14,    11,    40,    21,    34,    25,    16,    28,
-      28,     9,    16,    40,    32,    36,    37,    38,    36,    37,
-      38,    23,    40,    12,    26,    54,    13,    25,     7,    30,
-      28,    25,    26,    27,    32,    21,    65,    10,    36,    37,
-      38,    -1,    40,    26,    27,    47,    48,    49,    50,    51,
-      52,    53,    25,    26,    27,    12,    -1,    30,    31,    -1,
-      33,    34,    -1,    25,    26,    27,    -1,    -1,    25,    26,
-      27,    33,    34,    30,    31,    -1,    33,    34,    25,    26,
-      27,    -1,    -1,    -1,    31,    -1,    33,    34,     3,     4,
-       5,     6,     7
+      20,    11,     9,     8,    24,    53,    26,    36,    37,    38,
+      15,    25,    26,    27,     9,    22,    64,    31,    28,    33,
+      34,     9,    25,    26,    27,    15,    46,    47,    48,    49,
+      50,    51,    52,    28,    11,    26,    27,    32,    10,    16,
+      28,    36,    37,    38,    32,    40,     0,    40,    36,    37,
+      38,    12,    40,    25,    26,    27,    16,    40,    30,    31,
+      12,    33,    34,    13,    25,    26,    27,     7,    30,    30,
+      31,     8,    33,    34,    25,    26,    27,    14,    22,    30,
+      31,    -1,    33,    34,    25,    26,    27,    25,    26,    27,
+      -1,    -1,    33,    34,     0,     1,    34,     3,     4,     5,
+       6,     1,    -1,     3,     4,     5,     6
   };
 
   const signed char
    Parser ::yystos_[] =
   {
-       0,     3,     4,     5,     6,     7,    42,    43,    44,    45,
-       0,    44,    40,    46,    47,    49,    50,    51,    11,    16,
-      48,     8,    15,     9,    25,    28,    32,    36,    37,    38,
-      40,    47,    53,    54,    36,    53,    16,    47,    49,    54,
-      53,    40,    54,    12,    28,    48,    12,    25,    26,    27,
-      30,    31,    33,    34,    13,    10,    54,    54,    54,    54,
-      54,    54,    54,    52,    53,     8,    14,    53
+       0,     1,     3,     4,     5,     6,    42,    43,    44,    45,
+      15,     0,    44,    40,    46,    47,    49,    50,    51,    11,
+      16,    48,     8,    15,     9,    28,    32,    36,    37,    38,
+      40,    47,    53,    54,    36,    54,    16,    47,    49,    54,
+      40,    54,    12,    28,    48,    12,    25,    26,    27,    30,
+      31,    33,    34,    13,    10,    54,    54,    54,    54,    54,
+      54,    54,    52,    53,     8,    14,    53
   };
 
   const signed char
    Parser ::yyr1_[] =
   {
-       0,    41,    42,    43,    43,    44,    45,    45,    45,    45,
+       0,    41,    42,    43,    43,    44,    44,    45,    45,    45,
       45,    46,    46,    46,    46,    47,    47,    48,    48,    49,
       49,    50,    51,    52,    52,    53,    53,    53,    54,    54,
       54,    54,    54,    54,    54,    54,    54,    54,    54,    54,
-      54,    54
+      54
   };
 
   const signed char
    Parser ::yyr2_[] =
   {
-       0,     2,     1,     2,     1,     3,     1,     1,     1,     1,
+       0,     2,     1,     2,     1,     3,     2,     1,     1,     1,
        1,     3,     3,     1,     1,     1,     2,     3,     3,     1,
        1,     3,     6,     3,     1,     1,     1,     1,     3,     3,
        3,     2,     2,     3,     3,     2,     3,     3,     3,     1,
-       1,     2
+       1
   };
 
 
+#if YYDEBUG || 1
+  // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
+  // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
+  const char*
+  const  Parser ::yytname_[] =
+  {
+  "\"end of file\"", "error", "\"invalid token\"", "CHAR", "INT", "FLOAT",
+  "DOUBLE", "VOID", "COMMA", "LPAREN", "RPAREN", "LBRACK", "RBRACK",
+  "LBRACE", "RBRACE", "SEMI", "ASSIGN", "REFER", "IF", "ELSE", "WHILE",
+  "FOR", "CONTINUE", "BREAK", "RETURN", "ADD", "MUL", "DIV", "INC", "DEC",
+  "OR", "AND", "NOT", "EQU", "REL", "MINUS", "ILIT", "FLIT", "CHLIT",
+  "STRING", "ID", "$accept", "program", "declarations", "declaration",
+  "type", "names", "variable", "array", "initialization",
+  "scalar_initialization", "vector_initialization", "values", "literal",
+  "expression", YY_NULLPTR
+  };
+#endif
 
 
 #if YYDEBUG
-  const unsigned char
+  const short
    Parser ::yyrline_[] =
   {
-       0,    70,    70,    74,    78,    85,    92,    93,    94,    95,
-      96,   100,   104,   108,   112,   119,   123,   130,   134,   141,
-     143,   148,   155,   162,   166,   173,   175,   177,   182,   185,
-     188,   191,   195,   199,   202,   205,   208,   211,   214,   217,
-     220,   223
+       0,    75,    75,    84,    91,   100,   106,   113,   114,   115,
+     116,   120,   124,   128,   132,   139,   143,   150,   154,   161,
+     163,   168,   175,   182,   186,   193,   200,   207,   217,   221,
+     224,   227,   231,   235,   238,   241,   244,   247,   250,   253,
+     257
   };
 
   void
@@ -1243,9 +1463,9 @@ namespace  Cd  {
 
 #line 5 "parser.y"
 } //  Cd 
-#line 1247 "parser.cpp"
+#line 1467 "parser.cpp"
 
-#line 227 "parser.y"
+#line 262 "parser.y"
 
 
 void Cd::Parser::error(const std::string& message) {
@@ -1253,7 +1473,7 @@ void Cd::Parser::error(const std::string& message) {
     std::cout << message << std::endl;
 }
 
-void Cd::Parser::report_syntax_error (const context& ctx) const
-{
-    std::cout << "CURRR" << std::endl;
-}
+//void Cd::Parser::report_syntax_error (const context& ctx) const
+//{
+//    std::cout << "CURRR" << std::endl;
+//}

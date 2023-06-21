@@ -51,6 +51,7 @@
     #include <string>
     #include <vector>
     #include <variant>
+    #include "tree.h"
 
     // Forward Declare
     struct SymbolInfo;
@@ -61,7 +62,7 @@
         class Driver;
     }
 
-#line 65 "parser.h"
+#line 66 "parser.h"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -202,7 +203,7 @@
 
 #line 5 "parser.y"
 namespace  Cd  {
-#line 206 "parser.h"
+#line 207 "parser.h"
 
 
 
@@ -421,21 +422,27 @@ namespace  Cd  {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // declarations
+      // declaration
+      // type
+      // literal
+      char dummy1[sizeof (Node*)];
+
       // ID
-      char dummy1[sizeof (SymbolInfo*)];
+      char dummy2[sizeof (SymbolInfo*)];
 
       // CHAR
       // INT
       // FLOAT
       // DOUBLE
       // VOID
-      char dummy2[sizeof (TokenType)];
+      char dummy3[sizeof (TokenType)];
 
       // ILIT
       // FLIT
       // CHLIT
       // STRING
-      char dummy3[sizeof (std::variant<int,double,char,std::string>)];
+      char dummy4[sizeof (std::variant<int,double,char,std::string>)];
     };
 
     /// The size of the largest semantic type.
@@ -627,6 +634,13 @@ namespace  Cd  {
       {
         switch (this->kind ())
     {
+      case symbol_kind::S_declarations: // declarations
+      case symbol_kind::S_declaration: // declaration
+      case symbol_kind::S_type: // type
+      case symbol_kind::S_literal: // literal
+        value.move< Node* > (std::move (that.value));
+        break;
+
       case symbol_kind::S_ID: // ID
         value.move< SymbolInfo* > (std::move (that.value));
         break;
@@ -664,6 +678,18 @@ namespace  Cd  {
 #else
       basic_symbol (typename Base::kind_type t)
         : Base (t)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, Node*&& v)
+        : Base (t)
+        , value (std::move (v))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const Node*& v)
+        : Base (t)
+        , value (v)
       {}
 #endif
 
@@ -727,6 +753,13 @@ namespace  Cd  {
         // Value type destructor.
 switch (yykind)
     {
+      case symbol_kind::S_declarations: // declarations
+      case symbol_kind::S_declaration: // declaration
+      case symbol_kind::S_type: // type
+      case symbol_kind::S_literal: // literal
+        value.template destroy< Node* > ();
+        break;
+
       case symbol_kind::S_ID: // ID
         value.template destroy< SymbolInfo* > ();
         break;
@@ -754,7 +787,7 @@ switch (yykind)
       }
 
       /// The user-facing name of this symbol.
-      const char *name () const YY_NOEXCEPT
+      std::string name () const YY_NOEXCEPT
       {
         return  Parser ::symbol_name (this->kind ());
       }
@@ -925,7 +958,7 @@ switch (yykind)
 
     /// The user-facing name of the symbol whose (internal) number is
     /// YYSYMBOL.  No bounds checking.
-    static const char *symbol_name (symbol_kind_type yysymbol);
+    static std::string symbol_name (symbol_kind_type yysymbol);
 
     // Implementation of make_symbol for each token kind.
 #if 201103L <= YY_CPLUSPLUS
@@ -1573,9 +1606,13 @@ switch (yykind)
     /// Stored state numbers (used for stacks).
     typedef signed char state_type;
 
-    /// Report a syntax error
+    /// The arguments of the error message.
+    int yy_syntax_error_arguments_ (const context& yyctx,
+                                    symbol_kind_type yyarg[], int yyargn) const;
+
+    /// Generate an error message.
     /// \param yyctx     the context in which the error occurred.
-    void report_syntax_error (const context& yyctx) const;
+    virtual std::string yysyntax_error_ (const context& yyctx) const;
     /// Compute post-reduction state.
     /// \param yystate   the current state
     /// \param yysym     the nonterminal to push on the stack
@@ -1597,6 +1634,11 @@ switch (yykind)
     /// are valid, yet not members of the token_kind_type enum.
     static symbol_kind_type yytranslate_ (int t) YY_NOEXCEPT;
 
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    static std::string yytnamerr_ (const char *yystr);
+
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
 
 
     // Tables.
@@ -1635,7 +1677,7 @@ switch (yykind)
 
 #if YYDEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-    static const unsigned char yyrline_[];
+    static const short yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r) const;
     /// Print the state stack on the debug stream.
@@ -1862,9 +1904,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 102,     ///< Last index in yytable_.
+      yylast_ = 106,     ///< Last index in yytable_.
       yynnts_ = 14,  ///< Number of nonterminal symbols.
-      yyfinal_ = 10 ///< Termination state number.
+      yyfinal_ = 11 ///< Termination state number.
     };
 
 
@@ -1934,6 +1976,13 @@ switch (yykind)
   {
     switch (this->kind ())
     {
+      case symbol_kind::S_declarations: // declarations
+      case symbol_kind::S_declaration: // declaration
+      case symbol_kind::S_type: // type
+      case symbol_kind::S_literal: // literal
+        value.copy< Node* > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_ID: // ID
         value.copy< SymbolInfo* > (YY_MOVE (that.value));
         break;
@@ -1984,6 +2033,13 @@ switch (yykind)
     super_type::move (s);
     switch (this->kind ())
     {
+      case symbol_kind::S_declarations: // declarations
+      case symbol_kind::S_declaration: // declaration
+      case symbol_kind::S_type: // type
+      case symbol_kind::S_literal: // literal
+        value.move< Node* > (YY_MOVE (s.value));
+        break;
+
       case symbol_kind::S_ID: // ID
         value.move< SymbolInfo* > (YY_MOVE (s.value));
         break;
@@ -2069,7 +2125,7 @@ switch (yykind)
 
 #line 5 "parser.y"
 } //  Cd 
-#line 2073 "parser.h"
+#line 2129 "parser.h"
 
 
 

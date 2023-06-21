@@ -94,8 +94,8 @@ STRING			\"{printable}*\"
 "{"						{ return Cd::Parser::make_LBRACE(); }
 "}"						{ return Cd::Parser::make_RBRACE(); }
 
-{ID}     				{ return Cd::Parser::make_ID(new SymbolInfo(yytext, m_driver.lineNumber)); }
-
+{ID}     				{ 
+							return Cd::Parser::make_ID(new SymbolInfo(yytext, m_driver.lineNumber)); }
 {ILIT} 					{ 
 							return Cd::Parser::make_ILIT(atoi(yytext));
 						}
@@ -109,7 +109,7 @@ STRING			\"{printable}*\"
 {INVAL_FLIT_1}	 		{ ERROR("Constante real com caractere invalido"); }
 
 {CHLIT} 				{ 
-							return Cd::Parser::make_CHLIT(yytext[0]);
+							return Cd::Parser::make_CHLIT(yytext[1]);
  						}
 {STRING} 				{ 
 							return Cd::Parser::make_STRING(yytext);
