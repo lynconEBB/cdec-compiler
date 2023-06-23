@@ -18,7 +18,6 @@ namespace Cd {
 
     class Scanner : public yyFlexLexer {
     public:
-
         Scanner(Driver &driver, std::istream& inStream) : m_driver(driver), yyFlexLexer(inStream, std::cout) {}
         virtual Cd::Parser::symbol_type getNextToken();
 

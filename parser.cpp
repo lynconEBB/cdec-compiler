@@ -199,6 +199,7 @@ namespace  Cd  {
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
+      case symbol_kind::S_names: // names
       case symbol_kind::S_literal: // literal
         value.YY_MOVE_OR_COPY< Node* > (YY_MOVE (that.value));
         break;
@@ -240,6 +241,7 @@ namespace  Cd  {
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
+      case symbol_kind::S_names: // names
       case symbol_kind::S_literal: // literal
         value.move< Node* > (YY_MOVE (that.value));
         break;
@@ -281,6 +283,7 @@ namespace  Cd  {
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
+      case symbol_kind::S_names: // names
       case symbol_kind::S_literal: // literal
         value.copy< Node* > (that.value);
         break;
@@ -320,6 +323,7 @@ namespace  Cd  {
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
+      case symbol_kind::S_names: // names
       case symbol_kind::S_literal: // literal
         value.move< Node* > (that.value);
         break;
@@ -600,6 +604,7 @@ namespace  Cd  {
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
+      case symbol_kind::S_names: // names
       case symbol_kind::S_literal: // literal
         yylhs.value.emplace< Node* > ();
         break;
@@ -644,7 +649,7 @@ namespace  Cd  {
         node->addChild(yystack_[0].value.as < Node* > ());
         driver.printAST(node);
     }
-#line 648 "parser.cpp"
+#line 653 "parser.cpp"
     break;
 
   case 3: // declarations: declarations declaration
@@ -655,7 +660,7 @@ namespace  Cd  {
         node->addChild(yystack_[0].value.as < Node* > ());
         yylhs.value.as < Node* > () = node;
     }
-#line 659 "parser.cpp"
+#line 664 "parser.cpp"
     break;
 
   case 4: // declarations: declaration
@@ -665,7 +670,7 @@ namespace  Cd  {
         node->addChild(yystack_[0].value.as < Node* > ());
         yylhs.value.as < Node* > () = node;
     }
-#line 669 "parser.cpp"
+#line 674 "parser.cpp"
     break;
 
   case 5: // declaration: type names SEMI
@@ -675,280 +680,284 @@ namespace  Cd  {
         yylhs.value.as < Node* > ()->type = yystack_[2].value.as < Node* > ()->type;
 
     }
-#line 679 "parser.cpp"
+#line 684 "parser.cpp"
     break;
 
   case 6: // declaration: error SEMI
 #line 107 "parser.y"
     {
-        yyclearin();
+        // TODO: TEM Q CORRIGIR(retornar um variant com erro?)
+        yylhs.value.as < Node* > () = new Node("erro");
     }
-#line 687 "parser.cpp"
-    break;
-
-  case 7: // type: INT
-#line 113 "parser.y"
-          { yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); }
 #line 693 "parser.cpp"
     break;
 
+  case 7: // type: INT
+#line 115 "parser.y"
+    { 
+        yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); 
+    }
+#line 701 "parser.cpp"
+    break;
+
   case 8: // type: CHAR
-#line 114 "parser.y"
+#line 118 "parser.y"
            { yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); }
-#line 699 "parser.cpp"
+#line 707 "parser.cpp"
     break;
 
   case 9: // type: FLOAT
-#line 115 "parser.y"
+#line 119 "parser.y"
             { yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); }
-#line 705 "parser.cpp"
+#line 713 "parser.cpp"
     break;
 
   case 10: // type: DOUBLE
-#line 116 "parser.y"
+#line 120 "parser.y"
              { yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); }
-#line 711 "parser.cpp"
-    break;
-
-  case 11: // names: names COMMA variable
-#line 121 "parser.y"
-    {
-
-    }
 #line 719 "parser.cpp"
     break;
 
-  case 12: // names: names COMMA initialization
+  case 11: // names: names COMMA variable
 #line 125 "parser.y"
+    {
+        yylhs.value.as < Node* > () = new Node("names");
+        yylhs.value.as < Node* > ()->addChild(yystack_[2].value.as < Node* > ());
+    }
+#line 728 "parser.cpp"
+    break;
+
+  case 12: // names: names COMMA initialization
+#line 130 "parser.y"
     {
 
     }
-#line 727 "parser.cpp"
+#line 736 "parser.cpp"
     break;
 
   case 13: // names: variable
-#line 129 "parser.y"
+#line 134 "parser.y"
     {
 
     }
-#line 735 "parser.cpp"
+#line 744 "parser.cpp"
     break;
 
   case 14: // names: initialization
-#line 133 "parser.y"
+#line 138 "parser.y"
     {
 
     }
-#line 743 "parser.cpp"
+#line 752 "parser.cpp"
     break;
 
   case 15: // variable: ID
-#line 140 "parser.y"
+#line 145 "parser.y"
     {
-
+          
     }
-#line 751 "parser.cpp"
+#line 760 "parser.cpp"
     break;
 
   case 16: // variable: ID array
-#line 144 "parser.y"
+#line 149 "parser.y"
     {
 
     }
-#line 759 "parser.cpp"
+#line 768 "parser.cpp"
     break;
 
   case 17: // array: LBRACK expression RBRACK
-#line 151 "parser.y"
+#line 156 "parser.y"
     {
         
     }
-#line 767 "parser.cpp"
+#line 776 "parser.cpp"
     break;
 
   case 18: // array: LBRACK ILIT RBRACK
-#line 155 "parser.y"
+#line 160 "parser.y"
     {
 
     }
-#line 775 "parser.cpp"
+#line 784 "parser.cpp"
     break;
 
   case 19: // initialization: scalar_initialization
-#line 162 "parser.y"
+#line 167 "parser.y"
     { }
-#line 781 "parser.cpp"
+#line 790 "parser.cpp"
     break;
 
   case 20: // initialization: vector_initialization
-#line 164 "parser.y"
+#line 169 "parser.y"
     { }
-#line 787 "parser.cpp"
+#line 796 "parser.cpp"
     break;
 
   case 21: // scalar_initialization: ID ASSIGN expression
-#line 169 "parser.y"
+#line 174 "parser.y"
     {
 
     }
-#line 795 "parser.cpp"
+#line 804 "parser.cpp"
     break;
 
   case 22: // vector_initialization: ID array ASSIGN LBRACE values RBRACE
-#line 176 "parser.y"
+#line 181 "parser.y"
     {
 
     }
-#line 803 "parser.cpp"
+#line 812 "parser.cpp"
     break;
 
   case 23: // values: values COMMA literal
-#line 183 "parser.y"
+#line 188 "parser.y"
     {
 
     }
-#line 811 "parser.cpp"
+#line 820 "parser.cpp"
     break;
 
   case 24: // values: literal
-#line 187 "parser.y"
+#line 192 "parser.y"
     {
 
     }
-#line 819 "parser.cpp"
+#line 828 "parser.cpp"
     break;
 
   case 25: // literal: ILIT
-#line 194 "parser.y"
+#line 199 "parser.y"
     { 
         Node* node = new Node();     
         node->type = TokenType::INT;
         node->value = std::get<int>(yystack_[0].value.as < std::variant<int,double,char,std::string> > ());
         yylhs.value.as < Node* > () = node;
     }
-#line 830 "parser.cpp"
+#line 839 "parser.cpp"
     break;
 
   case 26: // literal: FLIT
-#line 201 "parser.y"
+#line 206 "parser.y"
     {
         Node* node = new Node();     
         node->type = TokenType::REAL;
         node->value = std::get<double>(yystack_[0].value.as < std::variant<int,double,char,std::string> > ());
         yylhs.value.as < Node* > () = node;
     }
-#line 841 "parser.cpp"
+#line 850 "parser.cpp"
     break;
 
   case 27: // literal: CHLIT
-#line 208 "parser.y"
+#line 213 "parser.y"
     {
         Node* node = new Node();     
         node->type = TokenType::CHAR;
         node->value = std::get<char>(yystack_[0].value.as < std::variant<int,double,char,std::string> > ());
         yylhs.value.as < Node* > () = node;
     }
-#line 852 "parser.cpp"
+#line 861 "parser.cpp"
     break;
 
   case 28: // expression: expression ADD expression
-#line 218 "parser.y"
+#line 223 "parser.y"
         { 
 
 	}
-#line 860 "parser.cpp"
+#line 869 "parser.cpp"
     break;
 
   case 29: // expression: expression MUL expression
-#line 222 "parser.y"
+#line 227 "parser.y"
         {
 	}
-#line 867 "parser.cpp"
+#line 876 "parser.cpp"
     break;
 
   case 30: // expression: expression DIV expression
-#line 225 "parser.y"
+#line 230 "parser.y"
         {
 	}
-#line 874 "parser.cpp"
+#line 883 "parser.cpp"
     break;
 
   case 31: // expression: ID INC
-#line 228 "parser.y"
+#line 233 "parser.y"
         {
 		/* increment */
 	}
-#line 882 "parser.cpp"
+#line 891 "parser.cpp"
     break;
 
   case 32: // expression: INC ID
-#line 232 "parser.y"
+#line 237 "parser.y"
         {
 		/* increment */
 	}
-#line 890 "parser.cpp"
+#line 899 "parser.cpp"
     break;
 
   case 33: // expression: expression OR expression
-#line 236 "parser.y"
+#line 241 "parser.y"
         {
 	}
-#line 897 "parser.cpp"
+#line 906 "parser.cpp"
     break;
 
   case 34: // expression: expression AND expression
-#line 239 "parser.y"
+#line 244 "parser.y"
         {
 	}
-#line 904 "parser.cpp"
+#line 913 "parser.cpp"
     break;
 
   case 35: // expression: NOT expression
-#line 242 "parser.y"
+#line 247 "parser.y"
         {
 	}
-#line 911 "parser.cpp"
+#line 920 "parser.cpp"
     break;
 
   case 36: // expression: expression EQU expression
-#line 245 "parser.y"
+#line 250 "parser.y"
         {
 	}
-#line 918 "parser.cpp"
+#line 927 "parser.cpp"
     break;
 
   case 37: // expression: expression REL expression
-#line 248 "parser.y"
+#line 253 "parser.y"
         {
 	}
-#line 925 "parser.cpp"
+#line 934 "parser.cpp"
     break;
 
   case 38: // expression: LPAREN expression RPAREN
-#line 251 "parser.y"
+#line 256 "parser.y"
         {
 	}
-#line 932 "parser.cpp"
+#line 941 "parser.cpp"
     break;
 
   case 39: // expression: variable
-#line 254 "parser.y"
+#line 259 "parser.y"
         { 
 
 	}
-#line 940 "parser.cpp"
+#line 949 "parser.cpp"
     break;
 
   case 40: // expression: literal
-#line 258 "parser.y"
+#line 263 "parser.y"
         {
 
 	}
-#line 948 "parser.cpp"
+#line 957 "parser.cpp"
     break;
 
 
-#line 952 "parser.cpp"
+#line 961 "parser.cpp"
 
             default:
               break;
@@ -1426,11 +1435,11 @@ namespace  Cd  {
   const short
    Parser ::yyrline_[] =
   {
-       0,    75,    75,    84,    91,   100,   106,   113,   114,   115,
-     116,   120,   124,   128,   132,   139,   143,   150,   154,   161,
-     163,   168,   175,   182,   186,   193,   200,   207,   217,   221,
-     224,   227,   231,   235,   238,   241,   244,   247,   250,   253,
-     257
+       0,    75,    75,    84,    91,   100,   106,   114,   118,   119,
+     120,   124,   129,   133,   137,   144,   148,   155,   159,   166,
+     168,   173,   180,   187,   191,   198,   205,   212,   222,   226,
+     229,   232,   236,   240,   243,   246,   249,   252,   255,   258,
+     262
   };
 
   void
@@ -1463,9 +1472,9 @@ namespace  Cd  {
 
 #line 5 "parser.y"
 } //  Cd 
-#line 1467 "parser.cpp"
+#line 1476 "parser.cpp"
 
-#line 262 "parser.y"
+#line 267 "parser.y"
 
 
 void Cd::Parser::error(const std::string& message) {

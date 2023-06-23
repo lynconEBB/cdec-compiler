@@ -556,9 +556,14 @@ static const flex_int16_t yy_chk[350] =
 
 	#define ERROR(MESSAGE) std::cout << "[ERROR]> Cadeia: " << yytext\
 						   << " - " << MESSAGE << " na linha " << m_driver.lineNumber << '\n'
-#line 560 "scanner.cpp"
+	
+	#define RETURN_TOKEN(TOK_TYPE, ...) \
+					const Cd::Parser::symbol_type& type = Cd::Parser::make_##TOK_TYPE(__VA_ARGS__); \
+					m_driver.m_symbolTable.insert(yytext, type); \
+					return type
+#line 565 "scanner.cpp"
 
-#line 562 "scanner.cpp"
+#line 567 "scanner.cpp"
 
 #define INITIAL 0
 #define MULTI_COMMENT 1
@@ -691,10 +696,10 @@ YY_DECL
 		}
 
 	{
-#line 41 "scanner.l"
+#line 46 "scanner.l"
 
 
-#line 698 "scanner.cpp"
+#line 703 "scanner.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -753,32 +758,32 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 43 "scanner.l"
+#line 48 "scanner.l"
 { } 
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 45 "scanner.l"
+#line 50 "scanner.l"
 { BEGIN(MULTI_COMMENT); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 46 "scanner.l"
+#line 51 "scanner.l"
 { BEGIN(INITIAL); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 47 "scanner.l"
+#line 52 "scanner.l"
 { }	
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 48 "scanner.l"
+#line 53 "scanner.l"
 { m_driver.lineNumber += 1; }
 	YY_BREAK
 case YY_STATE_EOF(MULTI_COMMENT):
-#line 49 "scanner.l"
+#line 54 "scanner.l"
 { 
 						  ERROR("Comentario em bloco nao terminado"); 
 						  return Cd::Parser::make_YYEOF();
@@ -786,276 +791,294 @@ case YY_STATE_EOF(MULTI_COMMENT):
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 54 "scanner.l"
-{ 
-							return Cd::Parser::make_CONTINUE(); 
-						}
+#line 59 "scanner.l"
+{ RETURN_TOKEN(CONTINUE); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 57 "scanner.l"
-{ return Cd::Parser::make_BREAK(); }
+#line 60 "scanner.l"
+{ RETURN_TOKEN(BREAK); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 58 "scanner.l"
-{ return Cd::Parser::make_RETURN(); }
+#line 61 "scanner.l"
+{ RETURN_TOKEN(RETURN); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 59 "scanner.l"
-{ return Cd::Parser::make_ELSE(); }
+#line 62 "scanner.l"
+{ RETURN_TOKEN(ELSE); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 60 "scanner.l"
-{ return Cd::Parser::make_WHILE(); }
+#line 63 "scanner.l"
+{ RETURN_TOKEN(WHILE); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 61 "scanner.l"
-{ return Cd::Parser::make_FOR(); }
+#line 64 "scanner.l"
+{ RETURN_TOKEN(FOR); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 62 "scanner.l"
-{ return Cd::Parser::make_IF(); }
+#line 65 "scanner.l"
+{ RETURN_TOKEN(IF); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 63 "scanner.l"
-{ return Cd::Parser::make_VOID(TokenType::VOID); }
+#line 66 "scanner.l"
+{ RETURN_TOKEN(VOID, TokenType::VOID); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 64 "scanner.l"
-{ return Cd::Parser::make_CHAR(TokenType::CHAR); }
+#line 67 "scanner.l"
+{ RETURN_TOKEN(CHAR, TokenType::CHAR); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 65 "scanner.l"
-{ return Cd::Parser::make_INT(TokenType::INT); }
+#line 68 "scanner.l"
+{ RETURN_TOKEN(INT, TokenType::INT);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 66 "scanner.l"
-{ return Cd::Parser::make_FLOAT(TokenType::REAL); }
+#line 69 "scanner.l"
+{ RETURN_TOKEN(FLOAT, TokenType::REAL);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 67 "scanner.l"
-{ return Cd::Parser::make_DOUBLE(TokenType::REAL); }
+#line 70 "scanner.l"
+{ RETURN_TOKEN(DOUBLE, TokenType::REAL);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 69 "scanner.l"
-{ return Cd::Parser::make_NOT(); }
+#line 72 "scanner.l"
+{ RETURN_TOKEN(NOT); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 70 "scanner.l"
-{ return Cd::Parser::make_EQU(); }
+#line 73 "scanner.l"
+{ RETURN_TOKEN(EQU); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 71 "scanner.l"
-{ return Cd::Parser::make_EQU(); }
+#line 74 "scanner.l"
+{ RETURN_TOKEN(EQU); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 72 "scanner.l"
-{ return Cd::Parser::make_REL(); }
+#line 75 "scanner.l"
+{ RETURN_TOKEN(REL); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 73 "scanner.l"
-{ return Cd::Parser::make_REL(); }
+#line 76 "scanner.l"
+{ RETURN_TOKEN(REL); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 74 "scanner.l"
-{ return Cd::Parser::make_REL(); }
+#line 77 "scanner.l"
+{ RETURN_TOKEN(REL); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 75 "scanner.l"
-{ return Cd::Parser::make_REL(); }
+#line 78 "scanner.l"
+{ RETURN_TOKEN(REL); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 76 "scanner.l"
-{ return Cd::Parser::make_ADD(); }
+#line 79 "scanner.l"
+{ RETURN_TOKEN(ADD); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 77 "scanner.l"
-{ return Cd::Parser::make_ADD(); }
+#line 80 "scanner.l"
+{ RETURN_TOKEN(ADD); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 78 "scanner.l"
-{ return Cd::Parser::make_MUL(); }
+#line 81 "scanner.l"
+{ RETURN_TOKEN(MUL); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 79 "scanner.l"
-{ return Cd::Parser::make_DIV(); }
+#line 82 "scanner.l"
+{ RETURN_TOKEN(DIV); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 80 "scanner.l"
-{ return Cd::Parser::make_INC(); }
+#line 83 "scanner.l"
+{ RETURN_TOKEN(INC); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 81 "scanner.l"
-{ return Cd::Parser::make_DEC(); }
+#line 84 "scanner.l"
+{ RETURN_TOKEN(DEC); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 82 "scanner.l"
-{ return Cd::Parser::make_OR(); }
+#line 85 "scanner.l"
+{ RETURN_TOKEN(OR); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 83 "scanner.l"
-{ return Cd::Parser::make_AND(); }
+#line 86 "scanner.l"
+{ RETURN_TOKEN(AND); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 86 "scanner.l"
-{ return Cd::Parser::make_SEMI(); }
+#line 89 "scanner.l"
+{ RETURN_TOKEN(SEMI); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 87 "scanner.l"
-{ return Cd::Parser::make_COMMA(); }
+#line 90 "scanner.l"
+{ RETURN_TOKEN(COMMA); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 88 "scanner.l"
-{ return Cd::Parser::make_ASSIGN(); }
+#line 91 "scanner.l"
+{ RETURN_TOKEN(ASSIGN); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 89 "scanner.l"
-{ return Cd::Parser::make_REFER(); }
+#line 92 "scanner.l"
+{ RETURN_TOKEN(REFER); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 90 "scanner.l"
-{ return Cd::Parser::make_LPAREN(); }
+#line 93 "scanner.l"
+{ RETURN_TOKEN(LPAREN); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 91 "scanner.l"
-{ return Cd::Parser::make_RPAREN(); }
+#line 94 "scanner.l"
+{ RETURN_TOKEN(RPAREN); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 92 "scanner.l"
-{ return Cd::Parser::make_RBRACK(); }
+#line 95 "scanner.l"
+{ RETURN_TOKEN(RBRACK); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 93 "scanner.l"
-{ return Cd::Parser::make_LBRACK(); }
+#line 96 "scanner.l"
+{ RETURN_TOKEN(LBRACK); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 94 "scanner.l"
-{ return Cd::Parser::make_LBRACE(); }
+#line 97 "scanner.l"
+{ RETURN_TOKEN(LBRACE); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 95 "scanner.l"
-{ return Cd::Parser::make_RBRACE(); }
+#line 98 "scanner.l"
+{ RETURN_TOKEN(RBRACE); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 97 "scanner.l"
+#line 100 "scanner.l"
 { 
-							return Cd::Parser::make_ID(new SymbolInfo(yytext, m_driver.lineNumber)); }
+							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext);
+							Cd::Parser::symbol_type type = Cd::Parser::make_ID(info);
+							info->classType = Cd::Parser::symbol_name(type.type_get());
+							return type;
+						}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 99 "scanner.l"
+#line 106 "scanner.l"
 { 
-							return Cd::Parser::make_ILIT(atoi(yytext));
+	      					const Cd::Parser::symbol_type& type = Cd::Parser::make_ILIT(atoi(yytext)); 
+							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext, type);
+							info->type = TokenType::INT;
+							info->value = atoi(yytext);
+							return type;
 						}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 102 "scanner.l"
+#line 113 "scanner.l"
 { ERROR("Constante inteira excedeu o limite");  }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 103 "scanner.l"
+#line 114 "scanner.l"
 { ERROR("Constante inteira com caractere invalido");  }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 105 "scanner.l"
+#line 116 "scanner.l"
 { 
-							return Cd::Parser::make_FLIT(atof(yytext));
+	      					const Cd::Parser::symbol_type& type = Cd::Parser::make_FLIT(atof(yytext)); 
+							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext, type);
+							info->type = TokenType::REAL;
+							info->value = atof(yytext);
+							return type;
  						}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 108 "scanner.l"
+#line 123 "scanner.l"
 { ERROR("Constante real excedeu o limite"); }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 109 "scanner.l"
+#line 124 "scanner.l"
 { ERROR("Constante real com caractere invalido"); }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 111 "scanner.l"
+#line 126 "scanner.l"
 { 
-							return Cd::Parser::make_CHLIT(yytext[1]);
+	      					const Cd::Parser::symbol_type& type = Cd::Parser::make_CHLIT(yytext[1]); 
+							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext, type);
+							info->type = TokenType::CHAR;
+							info->value = yytext[1];
+							return type;
  						}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 114 "scanner.l"
+#line 133 "scanner.l"
 { 
-							return Cd::Parser::make_STRING(yytext);
+	      					const Cd::Parser::symbol_type& type = Cd::Parser::make_STRING(yytext); 
+							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext, type);
+							info->type = TokenType::STR;
+							info->value = yytext;
+							return type;
  						}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 118 "scanner.l"
+#line 141 "scanner.l"
 { ERROR("Identificador com caractere invalido");  }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 120 "scanner.l"
+#line 143 "scanner.l"
 { return Cd::Parser::make_YYEOF(); }
 	YY_BREAK
 case 53:
 /* rule 53 can match eol */
 YY_RULE_SETUP
-#line 122 "scanner.l"
+#line 145 "scanner.l"
 { m_driver.lineNumber += 1; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 123 "scanner.l"
+#line 146 "scanner.l"
 { }	
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 125 "scanner.l"
+#line 148 "scanner.l"
 { ERROR("Token invalido"); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 127 "scanner.l"
+#line 150 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1059 "scanner.cpp"
+#line 1082 "scanner.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2016,5 +2039,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 127 "scanner.l"
+#line 150 "scanner.l"
 

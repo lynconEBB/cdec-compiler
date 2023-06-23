@@ -17,11 +17,11 @@ public:
     void printAST(Node* node);
 public:
     int lineNumber = 0;
+    SymbolTable m_symbolTable;
 
 private:
     Scanner m_scanner;
     Parser m_parser;
-    SymbolTable m_symbolTable;
 };
 
 }

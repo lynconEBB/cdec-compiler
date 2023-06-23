@@ -425,6 +425,7 @@ namespace  Cd  {
       // declarations
       // declaration
       // type
+      // names
       // literal
       char dummy1[sizeof (Node*)];
 
@@ -637,6 +638,7 @@ namespace  Cd  {
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
+      case symbol_kind::S_names: // names
       case symbol_kind::S_literal: // literal
         value.move< Node* > (std::move (that.value));
         break;
@@ -756,6 +758,7 @@ switch (yykind)
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
+      case symbol_kind::S_names: // names
       case symbol_kind::S_literal: // literal
         value.template destroy< Node* > ();
         break;
@@ -1979,6 +1982,7 @@ switch (yykind)
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
+      case symbol_kind::S_names: // names
       case symbol_kind::S_literal: // literal
         value.copy< Node* > (YY_MOVE (that.value));
         break;
@@ -2036,6 +2040,7 @@ switch (yykind)
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
+      case symbol_kind::S_names: // names
       case symbol_kind::S_literal: // literal
         value.move< Node* > (YY_MOVE (s.value));
         break;
@@ -2125,7 +2130,7 @@ switch (yykind)
 
 #line 5 "parser.y"
 } //  Cd 
-#line 2129 "parser.h"
+#line 2134 "parser.h"
 
 
 

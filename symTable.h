@@ -8,7 +8,7 @@
 #include <variant>
 
 
-using Value = std::variant<int,float,char,std::string>;
+using Value = std::variant<int,double,char,std::string,std::monostate>;
 
 enum class TokenType {
     UNDEFINED,
@@ -25,12 +25,11 @@ struct Parameter {
     TokenType type;
     std::string name;
     Value value;
-    bool byReference;
 };
 
 struct SymbolInfo {
     std::string name;
-    Cd::Parser::symbol_type classType;
+    std::string classType;
     TokenType type = TokenType::UNDEFINED;
     std::vector<uint32_t> references;
 
@@ -43,8 +42,15 @@ struct SymbolInfo {
     // Para retorno de função e tipo do array
     TokenType aditionalType;
 
+    SymbolInfo(const std::string& name, Cd::Parser::symbol_type inClassType, uint32_t firstReference):
+            name(name), references({firstReference}), type(TokenType::UNDEFINED), value(std::monostate()) 
+            {
+                classType = Cd::Parser::symbol_name(inClassType.type_get());
+            }
+
     SymbolInfo(const std::string& name, uint32_t firstReference):
-            name(name), references({firstReference}), type(TokenType::VOID) {}
+            name(name), references({firstReference}), type(TokenType::UNDEFINED),
+            value(std::monostate()), classType("UNDEFINED") {}
 };
 
 using SymIterator = std::unordered_map<std::string, SymbolInfo*>::iterator;
@@ -56,11 +62,10 @@ class SymbolTable {
 public:
     SymbolTable(Cd::Driver& driver) : m_driver(driver) { }
 
-    void insert();
-    void insertLiteral(std::string name, Cd::Parser::symbol_type classType);
-    void insertKeyword();
-    void inserIdentifier();
+    SymbolInfo* insert(const std::string& name, Cd::Parser::symbol_type classType);
+    SymbolInfo* insert(const std::string& name);
     SymbolInfo* find(const std::string& name);
+    void print();
 
 private:
     std::unordered_map<std::string, SymbolInfo*> symbolTable;

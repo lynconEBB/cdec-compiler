@@ -13,6 +13,11 @@
 
 	#define ERROR(MESSAGE) std::cout << "[ERROR]> Cadeia: " << yytext\
 						   << " - " << MESSAGE << " na linha " << m_driver.lineNumber << '\n'
+	
+	#define RETURN_TOKEN(TOK_TYPE, ...) \
+					const Cd::Parser::symbol_type& type = Cd::Parser::make_##TOK_TYPE(__VA_ARGS__); \
+					m_driver.m_symbolTable.insert(yytext, type); \
+					return type
 %}
 
 %x MULTI_COMMENT
@@ -51,68 +56,86 @@ STRING			\"{printable}*\"
 						  return Cd::Parser::make_YYEOF();
 						}
 
-"continue"				{ 
-							return Cd::Parser::make_CONTINUE(); 
-						}
-"break"					{ return Cd::Parser::make_BREAK(); }
-"return"				{ return Cd::Parser::make_RETURN(); }
-"else"					{ return Cd::Parser::make_ELSE(); }
-"while"					{ return Cd::Parser::make_WHILE(); }
-"for"					{ return Cd::Parser::make_FOR(); }
-"if"					{ return Cd::Parser::make_IF(); }
-"void"					{ return Cd::Parser::make_VOID(TokenType::VOID); }
-"char"  		     	{ return Cd::Parser::make_CHAR(TokenType::CHAR); }
-"int"					{ return Cd::Parser::make_INT(TokenType::INT); }
-"float"					{ return Cd::Parser::make_FLOAT(TokenType::REAL); }
-"double"				{ return Cd::Parser::make_DOUBLE(TokenType::REAL); }
+"continue"				{ RETURN_TOKEN(CONTINUE); }
+"break"					{ RETURN_TOKEN(BREAK); }
+"return"				{ RETURN_TOKEN(RETURN); }
+"else"					{ RETURN_TOKEN(ELSE); }
+"while"					{ RETURN_TOKEN(WHILE); }
+"for"					{ RETURN_TOKEN(FOR); }
+"if"					{ RETURN_TOKEN(IF); }
+"void"					{ RETURN_TOKEN(VOID, TokenType::VOID); }
+"char"  		     	{ RETURN_TOKEN(CHAR, TokenType::CHAR); }
+"int"					{ RETURN_TOKEN(INT, TokenType::INT);}
+"float"					{ RETURN_TOKEN(FLOAT, TokenType::REAL);}
+"double"				{ RETURN_TOKEN(DOUBLE, TokenType::REAL);}
 
-"!"						{ return Cd::Parser::make_NOT(); }
-"=="   				    { return Cd::Parser::make_EQU(); }
-"!="                    { return Cd::Parser::make_EQU(); }
-">"	                 	{ return Cd::Parser::make_REL(); }
-"<"                     { return Cd::Parser::make_REL(); }
-">="                    { return Cd::Parser::make_REL(); }
-"<="                    { return Cd::Parser::make_REL(); }
-"+" 					{ return Cd::Parser::make_ADD(); }
-"-"                     { return Cd::Parser::make_ADD(); }
-"*"						{ return Cd::Parser::make_MUL(); }
-"/"						{ return Cd::Parser::make_DIV(); }
-"++"	   			    { return Cd::Parser::make_INC(); }
-"--"                    { return Cd::Parser::make_DEC(); }
-"||"					{ return Cd::Parser::make_OR(); }
-"&&"					{ return Cd::Parser::make_AND(); }
+"!"						{ RETURN_TOKEN(NOT); }
+"=="   				    { RETURN_TOKEN(EQU); }
+"!="                    { RETURN_TOKEN(EQU); }
+">"	                 	{ RETURN_TOKEN(REL); }
+"<"                     { RETURN_TOKEN(REL); }
+">="                    { RETURN_TOKEN(REL); }
+"<="                    { RETURN_TOKEN(REL); }
+"+" 					{ RETURN_TOKEN(ADD); }
+"-"                     { RETURN_TOKEN(ADD); }
+"*"						{ RETURN_TOKEN(MUL); }
+"/"						{ RETURN_TOKEN(DIV); }
+"++"	   			    { RETURN_TOKEN(INC); }
+"--"                    { RETURN_TOKEN(DEC); }
+"||"					{ RETURN_TOKEN(OR); }
+"&&"					{ RETURN_TOKEN(AND); }
 
 
-";"						{ return Cd::Parser::make_SEMI(); }
-","						{ return Cd::Parser::make_COMMA(); }
-"="						{ return Cd::Parser::make_ASSIGN(); }
-"&"						{ return Cd::Parser::make_REFER(); }
-"("						{ return Cd::Parser::make_LPAREN(); }
-")"						{ return Cd::Parser::make_RPAREN(); }
-"]"						{ return Cd::Parser::make_RBRACK(); }
-"["						{ return Cd::Parser::make_LBRACK(); }
-"{"						{ return Cd::Parser::make_LBRACE(); }
-"}"						{ return Cd::Parser::make_RBRACE(); }
+";"						{ RETURN_TOKEN(SEMI); }
+","						{ RETURN_TOKEN(COMMA); }
+"="						{ RETURN_TOKEN(ASSIGN); }
+"&"						{ RETURN_TOKEN(REFER); }
+"("						{ RETURN_TOKEN(LPAREN); }
+")"						{ RETURN_TOKEN(RPAREN); }
+"]"						{ RETURN_TOKEN(RBRACK); }
+"["						{ RETURN_TOKEN(LBRACK); }
+"{"						{ RETURN_TOKEN(LBRACE); }
+"}"						{ RETURN_TOKEN(RBRACE); }
 
 {ID}     				{ 
-							return Cd::Parser::make_ID(new SymbolInfo(yytext, m_driver.lineNumber)); }
+							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext);
+							Cd::Parser::symbol_type type = Cd::Parser::make_ID(info);
+							info->classType = Cd::Parser::symbol_name(type.type_get());
+							return type;
+						}
 {ILIT} 					{ 
-							return Cd::Parser::make_ILIT(atoi(yytext));
+	      					const Cd::Parser::symbol_type& type = Cd::Parser::make_ILIT(atoi(yytext)); 
+							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext, type);
+							info->type = TokenType::INT;
+							info->value = atoi(yytext);
+							return type;
 						}
 {INVAL_ILIT_1}	 		{ ERROR("Constante inteira excedeu o limite");  }
 {INVAL_ILIT_2}	 		{ ERROR("Constante inteira com caractere invalido");  }
 
 {FLIT} 					{ 
-							return Cd::Parser::make_FLIT(atof(yytext));
+	      					const Cd::Parser::symbol_type& type = Cd::Parser::make_FLIT(atof(yytext)); 
+							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext, type);
+							info->type = TokenType::REAL;
+							info->value = atof(yytext);
+							return type;
  						}
 {INVAL_FLIT_2}	 		{ ERROR("Constante real excedeu o limite"); }
 {INVAL_FLIT_1}	 		{ ERROR("Constante real com caractere invalido"); }
 
 {CHLIT} 				{ 
-							return Cd::Parser::make_CHLIT(yytext[1]);
+	      					const Cd::Parser::symbol_type& type = Cd::Parser::make_CHLIT(yytext[1]); 
+							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext, type);
+							info->type = TokenType::CHAR;
+							info->value = yytext[1];
+							return type;
  						}
 {STRING} 				{ 
-							return Cd::Parser::make_STRING(yytext);
+	      					const Cd::Parser::symbol_type& type = Cd::Parser::make_STRING(yytext); 
+							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext, type);
+							info->type = TokenType::STR;
+							info->value = yytext;
+							return type;
  						}
 
 {INVAL_ID}      		{ ERROR("Identificador com caractere invalido");  }

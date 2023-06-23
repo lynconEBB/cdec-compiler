@@ -4,6 +4,7 @@
 namespace Cd
 {
 
+
 void Driver::init() {
     int a = m_parser.parse();
     if (a == 0) {
@@ -11,6 +12,7 @@ void Driver::init() {
     } else {
         std::cout << "Nao DEU" << std::endl;
     }
+    m_symbolTable.print();
 }
 
 void recursivePrint(Node* node, int tabs)
