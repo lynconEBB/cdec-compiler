@@ -77,7 +77,7 @@ STRING			\"{printable}*\"
 ">="                    { RETURN_TOKEN(REL); }
 "<="                    { RETURN_TOKEN(REL); }
 "+" 					{ RETURN_TOKEN(ADD); }
-"-"                     { RETURN_TOKEN(ADD); }
+"-"                     { RETURN_TOKEN(SUB); }
 "*"						{ RETURN_TOKEN(MUL); }
 "/"						{ RETURN_TOKEN(DIV); }
 "++"	   			    { RETURN_TOKEN(INC); }

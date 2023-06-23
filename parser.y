@@ -402,7 +402,7 @@ while_statement:
 tail: 
     LBRACE statements RBRACE
     { 
-
+        
     }
 ;
 
