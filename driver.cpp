@@ -25,7 +25,7 @@ void recursivePrint(Node* node, int tabs)
         }
     }
 
-    std::cout << node->name << '\n';
+    std::cout << node->name << " " << node->children.size() << '\n';
 
     for (Node* child : node->children) {
         recursivePrint(child, tabs + 1);

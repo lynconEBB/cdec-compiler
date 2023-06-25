@@ -8,6 +8,8 @@
 %define api.value.type variant
 %define parse.assert
 
+%expect 1
+
 // parser.h
 %code requires
 {
@@ -44,7 +46,7 @@
 %parse-param { Cd::Scanner& scanner }
 %parse-param { Cd::Driver& driver }
 %define parse.trace
-%define parse.error verbose
+%define parse.error custom
 
 %token<TokenType> CHAR INT FLOAT DOUBLE VOID 
 %token COMMA LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI ASSIGN REFER
@@ -59,13 +61,13 @@
 %left AND
 %left EQU
 %left REL
-%left ADD
+%left ADD SUB
 %left MUL DIV
-%right NOT INC REFER MINUS DEC
+%right NOT INC DEC REFER MINUS
 %left LPAREN RPAREN LBRACK RBRACK
 
-%type<Node*> declaration declarations statement assigment
-%type<Node*> literal array expression if_statement while_statement else_if optional_else
+%type<Node*> declaration declarations statement assigment values statements 
+%type<Node*> literal array expression if_statement while_statement else_if optional_else tail for_statement
 %type<Node*> type names variable initialization scalar_initialization vector_initialization
 
 %start program
@@ -80,6 +82,8 @@ program:
         driver.printAST(node);
     }
 ;
+
+declarations: declarations declaration | declaration
 
 declarations:
     declarations declaration
@@ -102,12 +106,15 @@ declaration:
     {
         $$ = new Node("declaration");
         $$->type = $1->type;
-
+        $$->addChild($1);
+        $$->addChild($2);
+        $$->addChild(new Node("SEMI"));
     }
-    | error SEMI
-    {
-        // TODO: TEM Q CORRIGIR(retornar um variant com erro?)
-        $$ = new Node("erro");
+    | error SEMI {
+        std::cout << "[Erro sintático] Não  " << std::endl;
+        yyerrok;
+        yyclearin;
+        $$ = new Node("error");
     }
 ;
 
@@ -115,22 +122,22 @@ type:
     INT 
     { 
         $$ = new Node("type", $1); 
-        $$.addChild(new Node("INT", $1));
+        $$->addChild(new Node("INT", $1));
     }
     | CHAR 
     { 
         $$ = new Node("type", $1); 
-        $$.addChild(new Node("CHAR", $1));
+        $$->addChild(new Node("CHAR", $1));
     }  
     | FLOAT 
     {
         $$ = new Node("type", $1); 
-        $$.addChild(new Node("FLOAT", $1));
+        $$->addChild(new Node("FLOAT", $1));
     }
     | DOUBLE 
     { 
         $$ = new Node("type", $1); 
-        $$.addChild(new Node("DOUBLE", $1));
+        $$->addChild(new Node("DOUBLE", $1));
     }
 ;
 
@@ -140,14 +147,14 @@ names:
         $$ = new Node("names");
         $$->addChild($1);
         $$->addChild(new Node("COMMA"));
-        $$->addChild($2);
+        $$->addChild($3);
     }
     | names COMMA initialization
     {
         $$ = new Node("names");
         $$->addChild($1);
         $$->addChild(new Node("COMMA"));
-        $$->addChild($2);
+        $$->addChild($3);
     }
     | variable
     {
@@ -165,11 +172,13 @@ variable:
     ID
     {
         $$ = new Node("variable");
-
+        $$->addChild(new Node("ID"));
     }
     | ID array
     {
         $$ = new Node("variable");
+        $$->addChild(new Node("ID"));
+        $$->addChild($2);
     }
 ;
 
@@ -177,16 +186,16 @@ array:
     LBRACK expression RBRACK
     {
         $$ = new Node("array",TokenType::ARRAY);
-        $$.addCHild(new Node("LBRACK"));
-        $$.addCHild($2);
-        $$.addCHild(new Node("RBRACK"));
+        $$->addChild(new Node("LBRACK"));
+        $$->addChild($2);
+        $$->addChild(new Node("RBRACK"));
     }
     | LBRACK ILIT RBRACK
     {
         $$ = new Node("array",TokenType::ARRAY);
-        $$.addCHild(new Node("LBRACK"));
-        $$.addCHild(new Node("ILIT", std::get<int>($1)));
-        $$.addCHild(new Node("RBRACK"));
+        $$->addChild(new Node("LBRACK"));
+        $$->addChild(new Node("ILIT", TokenType::INT, std::get<int>($2)));
+        $$->addChild(new Node("RBRACK"));
     }
 ;
 
@@ -194,38 +203,52 @@ initialization:
     scalar_initialization
     { 
         $$ = new Node("initialization");
-        $$->add($1);
+        $$->addChild($1);
     }
     | vector_initialization
     { 
         $$ = new Node("initialization");
-        $$->add($1);
+        $$->addChild($1);
     }
 ;
 
 scalar_initialization:
     ID ASSIGN expression
     {
-        $$ = new Node("scalar_initialization", ); 
-        $$->addChild(new Node("ID", $1 ))
+        $$ = new Node("scalar_initialization"); 
+        $$->addChild(new Node("ID"));
+        $$->addChild(new Node("ASSIGN"));
+        $$->addChild($3);
     }
 ;
 
 vector_initialization:
     ID array ASSIGN LBRACE values RBRACE
     {
-
+        $$ = new Node("vector_initialization");     
+        $$->addChild(new Node("ID"));
+        $$->addChild($2);
+        $$->addChild(new Node("ASSIGN"));
+        $$->addChild(new Node("LBRACE"));
+        $$->addChild($5);
+        $$->addChild(new Node("RBRACE"));
     }
 ;
 
 values:
     values COMMA literal
     {
-
+        Node* node = new Node("literal");     
+        node->addChild($1);
+        node->addChild(new Node("COMMA"));
+        node->addChild($3);
+        $$ = node;
     }
     | literal
     {
-
+        Node* node = new Node("literal");     
+        node->addChild($1);
+        $$ = node;
     }
 ;
 
@@ -256,66 +279,89 @@ literal:
 expression:
     expression ADD expression
 	{ 
-        
+        $$ = new Node("expression", $1->type, $1->value);
+        $$->addChild($1);
+        $$->addChild(new Node("ADD"));
+        $$->addChild($3);
 	}
     | expression SUB expression
 	{ 
-        
+        $$ = new Node("expression", $1->type, $1->value);
+        $$->addChild($1);
+        $$->addChild(new Node("SUB"));
+        $$->addChild($3);
 	}
 	| expression MUL expression
 	{
-
+        $$ = new Node("expression", $1->type, $1->value);
+        $$->addChild($1);
+        $$->addChild(new Node("MUL"));
+        $$->addChild($3);
 	}
 	| expression DIV expression
 	{
-        
+        $$ = new Node("expression", $1->type, $1->value);
+        $$->addChild($1);
+        $$->addChild(new Node("DIV"));
+        $$->addChild($3);
 	}
 	| ID INC
 	{
-        $$ = new Node("expression", $1->type, $1->value);
-        $$->addChild($2);
+        $$ = new Node("expression");
+        $$->addChild(new Node("ID"));
         $$->addChild(new Node("INC"));
 	}
 	| INC ID
 	{
-        $$ = new Node("expression", $2->type, $2->value);
+        $$ = new Node("expression");
         $$->addChild(new Node("INC"));
-        $$->addChild($2);
+        $$->addChild(new Node("ID"));
 	}
 	| ID DEC
 	{
-        $$ = new Node("expression", $1->type, $1->value);
-        $$->addChild($2);
+        $$ = new Node("expression");
+        $$->addChild(new Node("ID"));
         $$->addChild(new Node("DEC"));
 	}
 	| DEC ID
 	{
-        $$ = new Node("expression", $2->type, $2->value);
+        $$ = new Node("expression");
         $$->addChild(new Node("DEC"));
-        $$->addChild($2);
+        $$->addChild(new Node("ID"));
 	}
 	| expression OR expression
 	{
+        $$ = new Node("expression", $1->type, $1->value);
+        $$->addChild($1);
+        $$->addChild(new Node("OR"));
+        $$->addChild($3);
 	}
 	| expression AND expression
 	{
+        $$ = new Node("expression", $1->type, $1->value);
+        $$->addChild($1);
+        $$->addChild(new Node("AND"));
+        $$->addChild($3);
 	}
 	| NOT expression
 	{
+        $$ = new Node("expression", $2->type, $2->value);
+        $$->addChild(new Node("NOT"));
+        $$->addChild($2);
 	}
 	| expression EQU expression
 	{
-        $$ = new Node("expression", $2->type, $2->value);
-        $$->addChild(new Node("LPAREN"));
-        $$->addChild($2);
-        $$->addChild(new Node("RPAREN"));
+        $$ = new Node("expression", $1->type, $1->value);
+        $$->addChild($1);
+        $$->addChild(new Node("EQU"));
+        $$->addChild($3);
 	}
 	| expression REL expression
 	{
-        $$ = new Node("expression", $2->type, $2->value);
-        $$->addChild(new Node("LPAREN"));
-        $$->addChild($2);
-        $$->addChild(new Node("RPAREN"));
+        $$ = new Node("expression", $1->type, $1->value);
+        $$->addChild($1);
+        $$->addChild(new Node("REL"));
+        $$->addChild($3);
 	}
 	| LPAREN expression RPAREN
 	{
@@ -327,142 +373,213 @@ expression:
 	| variable
 	{ 
         $$ = new Node("expression", $1->type, $1->value);
+        $$->addChild($1);
 	}
 	| literal
 	{
         $$ = new Node("expression", $1->type, $1->value);
+        $$->addChild($1);
 	}
 ;
 
 statements:
-    statements statement
+    %empty
     {
-
-    
+        $$ = new Node("statements");
     }
-    | statement
+    | statements statement
     {
-
+        $$ = new Node("statements");
+        $$->addChild($1);
+        $$->addChild($2);
     }
 ;
 
 if_statement:
 	IF LPAREN expression RPAREN tail else_if optional_else
 	{
-		$$ = new_ast_if_node($3, $5, elsifs, elseif_count, $7);
-		elseif_count = 0;
-		elsifs = NULL;
+        $$ = new Node("if_statement");
+        $$->addChild(new Node("IF"));
+        $$->addChild(new Node("LPAREN"));
+        $$->addChild($3);
+        $$->addChild(new Node("RPAREN"));
+        $$->addChild($5);
+        $$->addChild($6);
+        $$->addChild($7);
 	}
 	| IF LPAREN expression RPAREN tail optional_else
 	{
-		$$ = new_ast_if_node($3, $5, NULL, 0, $6);
+        $$ = new Node("if_statement");
+        $$->addChild(new Node("IF"));
+        $$->addChild(new Node("LPAREN"));
+        $$->addChild($3);
+        $$->addChild(new Node("RPAREN"));
+        $$->addChild($5);
+        $$->addChild($6);
 	}
 ;
 
 else_if:
 	else_if ELSE IF LPAREN expression RPAREN tail
 	{
-		AST_Node *temp = new_ast_elsif_node($5, $7);
-		add_elseif(temp);
+        $$ = new Node("else_if");
+        $$->addChild($1);
+        $$->addChild(new Node("ELSE"));
+        $$->addChild(new Node("IF"));
+        $$->addChild(new Node("LPAREN"));
+        $$->addChild($5);
+        $$->addChild(new Node("RPAREN"));
+        $$->addChild($7);
 	}
 	| ELSE IF LPAREN expression RPAREN tail
 	{
-		AST_Node *temp = new_ast_elsif_node($4, $6);
-		add_elseif(temp);
+        $$ = new Node("else_if");
+        $$->addChild(new Node("ELSE"));
+        $$->addChild(new Node("IF"));
+        $$->addChild(new Node("LPAREN"));
+        $$->addChild($4);
+        $$->addChild(new Node("RPAREN"));
+        $$->addChild($6);
 	}
 ;
 
 optional_else:
 	ELSE tail
 	{
-		/* else exists */
-		$$ = $2;
+        $$ = new Node("optional_else");
+        $$->addChild(new Node("ELSE"));
+        $$->addChild($2);
 	}
-	| /* empty */
-	{
-		/* no else */
-		$$ = NULL;
+	| %empty {
+		$$ = nullptr;
 	}
 ;
 
 for_statement: 
     FOR LPAREN assigment SEMI expression SEMI ID INC RPAREN tail
     {
-
+        $$ = new Node("for_statement");
+        $$->addChild(new Node("FOR"));
+        $$->addChild(new Node("LPAREN"));
+        $$->addChild($3);
+        $$->addChild(new Node("SEMI"));
+        $$->addChild($5);
+        $$->addChild(new Node("SEMI"));
+        $$->addChild(new Node("ID"));
+        $$->addChild(new Node("INC"));
+        $$->addChild(new Node("RPAREN"));
+        $$->addChild($10);
+    }
+    | FOR LPAREN assigment SEMI expression SEMI ID DEC RPAREN tail
+    {
+        $$ = new Node("for_statement");
+        $$->addChild(new Node("FOR"));
+        $$->addChild(new Node("LPAREN"));
+        $$->addChild($3);
+        $$->addChild(new Node("SEMI"));
+        $$->addChild($5);
+        $$->addChild(new Node("SEMI"));
+        $$->addChild(new Node("ID"));
+        $$->addChild(new Node("DEC"));
+        $$->addChild(new Node("RPAREN"));
+        $$->addChild($10);
     }
 ;
 
 while_statement: 
     WHILE LPAREN expression RPAREN tail
     {
-
+        $$ = new Node("while_statement");
+        $$->addChild(new Node("WHILE"));
+        $$->addChild(new Node("LPAREN"));
+        $$->addChild($3);
+        $$->addChild(new Node("RPAREN"));
+        $$->addChild($5);
     }
 ;
 
 tail: 
     LBRACE statements RBRACE
     { 
-        
+        $$ = new Node("tail");
+        $$->addChild(new Node("LBRACE"));
+        $$->addChild($2);
+        $$->addChild(new Node("RBRACE"));
     }
 ;
-
 
 assigment: 
     variable ASSIGN expression
     {
-
+        $$ = new Node("assigment");
+        $$->addChild($1);
+        $$->addChild(new Node("ASSIGN"));
+        $$->addChild($3);
     }
 ;
 
 statement:
     if_statement
 	{ 
-		$$ = $1; /* just pass information */
+        $$ = new Node("statement");
+        $$->addChild($1);
 	}
 	| for_statement
 	{ 
-		$$ = $1; /* just pass information */
+        $$ = new Node("statement");
+        $$->addChild($1);
 	}
 	| while_statement
 	{
-		$$ = $1; /* just pass information */
+        $$ = new Node("statement");
+        $$->addChild($1);
 	}
 	| assigment SEMI
 	{
-		$$ = $1; /* just pass information */
+        $$ = new Node("statement");
+        $$->addChild($1);
+        $$->addChild(new Node("SEMI"));
 	}
 	| CONTINUE SEMI
 	{ 
-		$$ = new_ast_simple_node(0);
+        $$ = new Node("statement");
+        $$->addChild(new Node("CONTINUE"));
+        $$->addChild(new Node("SEMI"));
 	}
 	| BREAK SEMI
 	{ 
-		$$ = new_ast_simple_node(1);
+        $$ = new Node("statement");
+        $$->addChild(new Node("BREAK"));
+        $$->addChild(new Node("SEMI"));
 	}
 	| ID INC SEMI
 	{
-		/* increment */
-		if($2.ival == INC){
-			$$ = new_ast_incr_node($1, 0, 0);
-		}
-		else{
-			$$ = new_ast_incr_node($1, 1, 0);
-		}
+        $$ = new Node("statement");
+        $$->addChild(new Node("ID"));
+        $$->addChild(new Node("INC"));
+        $$->addChild(new Node("SEMI"));
 	}
 	| INC ID SEMI
 	{
-		/* increment */
-		if($1.ival == INC){
-			$$ = new_ast_incr_node($2, 0, 1);
-		}
-		else{
-			$$ = new_ast_incr_node($2, 1, 1);
-		}
+        $$ = new Node("statement");
+        $$->addChild(new Node("INC"));
+        $$->addChild(new Node("ID"));
+        $$->addChild(new Node("SEMI"));
 	}
-    | error 
-    {
-        
-    }
+	| ID DEC SEMI
+	{
+        $$ = new Node("statement");
+        $$->addChild(new Node("ID"));
+        $$->addChild(new Node("DEC"));
+        $$->addChild(new Node("SEMI"));
+	}
+	| DEC ID SEMI
+	{
+        $$ = new Node("statement");
+        $$->addChild(new Node("DEC"));
+        $$->addChild(new Node("ID"));
+        $$->addChild(new Node("SEMI"));
+	}
 ;
 
 %%
@@ -472,7 +589,28 @@ void Cd::Parser::error(const std::string& message) {
     std::cout << message << std::endl;
 }
 
-//void Cd::Parser::report_syntax_error (const context& ctx) const
-//{
-//    std::cout << "CURRR" << std::endl;
-//}
+void Cd::Parser::report_syntax_error (const context& ctx) const
+{
+    int res = 0;
+    std::cout << "[Erro sintático] ";
+    // Report the tokens expected at this point.
+    {
+        symbol_kind_type expected[10];
+
+        std::cout << "Esperava-se ";
+        int n = ctx.expected_tokens(expected, 10);
+        for (int i = 0; i < n; ++i) {
+            if (i != 0)
+                std::cout << " ou ";
+
+            std::cout << symbol_name (expected[i]);
+        }
+    }
+
+    {
+    symbol_kind_type lookahead = ctx.token();
+    if (lookahead != symbol_kind::S_YYEMPTY)
+      std::cout << " porém foi colocado " << symbol_name (lookahead);
+    }
+    std::cout << '\n';
+}

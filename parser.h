@@ -45,7 +45,7 @@
 #ifndef YY_YY_PARSER_H_INCLUDED
 # define YY_YY_PARSER_H_INCLUDED
 // "%code requires" blocks.
-#line 13 "parser.y"
+#line 15 "parser.y"
 
     #include <iostream>
     #include <string>
@@ -426,7 +426,23 @@ namespace  Cd  {
       // declaration
       // type
       // names
+      // variable
+      // array
+      // initialization
+      // scalar_initialization
+      // vector_initialization
+      // values
       // literal
+      // expression
+      // statements
+      // if_statement
+      // else_if
+      // optional_else
+      // for_statement
+      // while_statement
+      // tail
+      // assigment
+      // statement
       char dummy1[sizeof (Node*)];
 
       // ID
@@ -513,21 +529,22 @@ namespace  Cd  {
     BREAK = 278,                   // BREAK
     RETURN = 279,                  // RETURN
     ADD = 280,                     // ADD
-    MUL = 281,                     // MUL
-    DIV = 282,                     // DIV
-    INC = 283,                     // INC
-    DEC = 284,                     // DEC
-    OR = 285,                      // OR
-    AND = 286,                     // AND
-    NOT = 287,                     // NOT
-    EQU = 288,                     // EQU
-    REL = 289,                     // REL
-    MINUS = 290,                   // MINUS
-    ILIT = 291,                    // ILIT
-    FLIT = 292,                    // FLIT
-    CHLIT = 293,                   // CHLIT
-    STRING = 294,                  // STRING
-    ID = 295                       // ID
+    SUB = 281,                     // SUB
+    MUL = 282,                     // MUL
+    DIV = 283,                     // DIV
+    INC = 284,                     // INC
+    DEC = 285,                     // DEC
+    OR = 286,                      // OR
+    AND = 287,                     // AND
+    NOT = 288,                     // NOT
+    EQU = 289,                     // EQU
+    REL = 290,                     // REL
+    MINUS = 291,                   // MINUS
+    ILIT = 292,                    // ILIT
+    FLIT = 293,                    // FLIT
+    CHLIT = 294,                   // CHLIT
+    STRING = 295,                  // STRING
+    ID = 296                       // ID
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -544,7 +561,7 @@ namespace  Cd  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 41, ///< Number of tokens.
+        YYNTOKENS = 42, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -572,35 +589,45 @@ namespace  Cd  {
         S_BREAK = 23,                            // BREAK
         S_RETURN = 24,                           // RETURN
         S_ADD = 25,                              // ADD
-        S_MUL = 26,                              // MUL
-        S_DIV = 27,                              // DIV
-        S_INC = 28,                              // INC
-        S_DEC = 29,                              // DEC
-        S_OR = 30,                               // OR
-        S_AND = 31,                              // AND
-        S_NOT = 32,                              // NOT
-        S_EQU = 33,                              // EQU
-        S_REL = 34,                              // REL
-        S_MINUS = 35,                            // MINUS
-        S_ILIT = 36,                             // ILIT
-        S_FLIT = 37,                             // FLIT
-        S_CHLIT = 38,                            // CHLIT
-        S_STRING = 39,                           // STRING
-        S_ID = 40,                               // ID
-        S_YYACCEPT = 41,                         // $accept
-        S_program = 42,                          // program
-        S_declarations = 43,                     // declarations
-        S_declaration = 44,                      // declaration
-        S_type = 45,                             // type
-        S_names = 46,                            // names
-        S_variable = 47,                         // variable
-        S_array = 48,                            // array
-        S_initialization = 49,                   // initialization
-        S_scalar_initialization = 50,            // scalar_initialization
-        S_vector_initialization = 51,            // vector_initialization
-        S_values = 52,                           // values
-        S_literal = 53,                          // literal
-        S_expression = 54                        // expression
+        S_SUB = 26,                              // SUB
+        S_MUL = 27,                              // MUL
+        S_DIV = 28,                              // DIV
+        S_INC = 29,                              // INC
+        S_DEC = 30,                              // DEC
+        S_OR = 31,                               // OR
+        S_AND = 32,                              // AND
+        S_NOT = 33,                              // NOT
+        S_EQU = 34,                              // EQU
+        S_REL = 35,                              // REL
+        S_MINUS = 36,                            // MINUS
+        S_ILIT = 37,                             // ILIT
+        S_FLIT = 38,                             // FLIT
+        S_CHLIT = 39,                            // CHLIT
+        S_STRING = 40,                           // STRING
+        S_ID = 41,                               // ID
+        S_YYACCEPT = 42,                         // $accept
+        S_program = 43,                          // program
+        S_declarations = 44,                     // declarations
+        S_declaration = 45,                      // declaration
+        S_type = 46,                             // type
+        S_names = 47,                            // names
+        S_variable = 48,                         // variable
+        S_array = 49,                            // array
+        S_initialization = 50,                   // initialization
+        S_scalar_initialization = 51,            // scalar_initialization
+        S_vector_initialization = 52,            // vector_initialization
+        S_values = 53,                           // values
+        S_literal = 54,                          // literal
+        S_expression = 55,                       // expression
+        S_statements = 56,                       // statements
+        S_if_statement = 57,                     // if_statement
+        S_else_if = 58,                          // else_if
+        S_optional_else = 59,                    // optional_else
+        S_for_statement = 60,                    // for_statement
+        S_while_statement = 61,                  // while_statement
+        S_tail = 62,                             // tail
+        S_assigment = 63,                        // assigment
+        S_statement = 64                         // statement
       };
     };
 
@@ -639,7 +666,23 @@ namespace  Cd  {
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
       case symbol_kind::S_names: // names
+      case symbol_kind::S_variable: // variable
+      case symbol_kind::S_array: // array
+      case symbol_kind::S_initialization: // initialization
+      case symbol_kind::S_scalar_initialization: // scalar_initialization
+      case symbol_kind::S_vector_initialization: // vector_initialization
+      case symbol_kind::S_values: // values
       case symbol_kind::S_literal: // literal
+      case symbol_kind::S_expression: // expression
+      case symbol_kind::S_statements: // statements
+      case symbol_kind::S_if_statement: // if_statement
+      case symbol_kind::S_else_if: // else_if
+      case symbol_kind::S_optional_else: // optional_else
+      case symbol_kind::S_for_statement: // for_statement
+      case symbol_kind::S_while_statement: // while_statement
+      case symbol_kind::S_tail: // tail
+      case symbol_kind::S_assigment: // assigment
+      case symbol_kind::S_statement: // statement
         value.move< Node* > (std::move (that.value));
         break;
 
@@ -759,7 +802,23 @@ switch (yykind)
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
       case symbol_kind::S_names: // names
+      case symbol_kind::S_variable: // variable
+      case symbol_kind::S_array: // array
+      case symbol_kind::S_initialization: // initialization
+      case symbol_kind::S_scalar_initialization: // scalar_initialization
+      case symbol_kind::S_vector_initialization: // vector_initialization
+      case symbol_kind::S_values: // values
       case symbol_kind::S_literal: // literal
+      case symbol_kind::S_expression: // expression
+      case symbol_kind::S_statements: // statements
+      case symbol_kind::S_if_statement: // if_statement
+      case symbol_kind::S_else_if: // else_if
+      case symbol_kind::S_optional_else: // optional_else
+      case symbol_kind::S_for_statement: // for_statement
+      case symbol_kind::S_while_statement: // while_statement
+      case symbol_kind::S_tail: // tail
+      case symbol_kind::S_assigment: // assigment
+      case symbol_kind::S_statement: // statement
         value.template destroy< Node* > ();
         break;
 
@@ -790,7 +849,7 @@ switch (yykind)
       }
 
       /// The user-facing name of this symbol.
-      std::string name () const YY_NOEXCEPT
+      const char *name () const YY_NOEXCEPT
       {
         return  Parser ::symbol_name (this->kind ());
       }
@@ -961,7 +1020,7 @@ switch (yykind)
 
     /// The user-facing name of the symbol whose (internal) number is
     /// YYSYMBOL.  No bounds checking.
-    static std::string symbol_name (symbol_kind_type yysymbol);
+    static const char *symbol_name (symbol_kind_type yysymbol);
 
     // Implementation of make_symbol for each token kind.
 #if 201103L <= YY_CPLUSPLUS
@@ -1357,6 +1416,21 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_SUB ()
+      {
+        return symbol_type (token::SUB);
+      }
+#else
+      static
+      symbol_type
+      make_SUB ()
+      {
+        return symbol_type (token::SUB);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_MUL ()
       {
         return symbol_type (token::MUL);
@@ -1607,15 +1681,11 @@ switch (yykind)
 
 
     /// Stored state numbers (used for stacks).
-    typedef signed char state_type;
+    typedef unsigned char state_type;
 
-    /// The arguments of the error message.
-    int yy_syntax_error_arguments_ (const context& yyctx,
-                                    symbol_kind_type yyarg[], int yyargn) const;
-
-    /// Generate an error message.
+    /// Report a syntax error
     /// \param yyctx     the context in which the error occurred.
-    virtual std::string yysyntax_error_ (const context& yyctx) const;
+    void report_syntax_error (const context& yyctx) const;
     /// Compute post-reduction state.
     /// \param yystate   the current state
     /// \param yysym     the nonterminal to push on the stack
@@ -1637,17 +1707,12 @@ switch (yykind)
     /// are valid, yet not members of the token_kind_type enum.
     static symbol_kind_type yytranslate_ (int t) YY_NOEXCEPT;
 
-    /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    static std::string yytnamerr_ (const char *yystr);
-
-    /// For a symbol, its name in clear.
-    static const char* const yytname_[];
 
 
     // Tables.
     // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
     // STATE-NUM.
-    static const signed char yypact_[];
+    static const short yypact_[];
 
     // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
     // Performed when YYTABLE does not specify something else to do.  Zero
@@ -1655,7 +1720,7 @@ switch (yykind)
     static const signed char yydefact_[];
 
     // YYPGOTO[NTERM-NUM].
-    static const signed char yypgoto_[];
+    static const short yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
     static const signed char yydefgoto_[];
@@ -1663,9 +1728,9 @@ switch (yykind)
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
     // number is the opposite.  If YYTABLE_NINF, syntax error.
-    static const signed char yytable_[];
+    static const short yytable_[];
 
-    static const signed char yycheck_[];
+    static const short yycheck_[];
 
     // YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
     // state STATE-NUM.
@@ -1907,8 +1972,8 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 106,     ///< Last index in yytable_.
-      yynnts_ = 14,  ///< Number of nonterminal symbols.
+      yylast_ = 248,     ///< Last index in yytable_.
+      yynnts_ = 23,  ///< Number of nonterminal symbols.
       yyfinal_ = 11 ///< Termination state number.
     };
 
@@ -1958,10 +2023,10 @@ switch (yykind)
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38,    39,    40
+      35,    36,    37,    38,    39,    40,    41
     };
     // Last valid token kind.
-    const int code_max = 295;
+    const int code_max = 296;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;
@@ -1983,7 +2048,23 @@ switch (yykind)
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
       case symbol_kind::S_names: // names
+      case symbol_kind::S_variable: // variable
+      case symbol_kind::S_array: // array
+      case symbol_kind::S_initialization: // initialization
+      case symbol_kind::S_scalar_initialization: // scalar_initialization
+      case symbol_kind::S_vector_initialization: // vector_initialization
+      case symbol_kind::S_values: // values
       case symbol_kind::S_literal: // literal
+      case symbol_kind::S_expression: // expression
+      case symbol_kind::S_statements: // statements
+      case symbol_kind::S_if_statement: // if_statement
+      case symbol_kind::S_else_if: // else_if
+      case symbol_kind::S_optional_else: // optional_else
+      case symbol_kind::S_for_statement: // for_statement
+      case symbol_kind::S_while_statement: // while_statement
+      case symbol_kind::S_tail: // tail
+      case symbol_kind::S_assigment: // assigment
+      case symbol_kind::S_statement: // statement
         value.copy< Node* > (YY_MOVE (that.value));
         break;
 
@@ -2041,7 +2122,23 @@ switch (yykind)
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
       case symbol_kind::S_names: // names
+      case symbol_kind::S_variable: // variable
+      case symbol_kind::S_array: // array
+      case symbol_kind::S_initialization: // initialization
+      case symbol_kind::S_scalar_initialization: // scalar_initialization
+      case symbol_kind::S_vector_initialization: // vector_initialization
+      case symbol_kind::S_values: // values
       case symbol_kind::S_literal: // literal
+      case symbol_kind::S_expression: // expression
+      case symbol_kind::S_statements: // statements
+      case symbol_kind::S_if_statement: // if_statement
+      case symbol_kind::S_else_if: // else_if
+      case symbol_kind::S_optional_else: // optional_else
+      case symbol_kind::S_for_statement: // for_statement
+      case symbol_kind::S_while_statement: // while_statement
+      case symbol_kind::S_tail: // tail
+      case symbol_kind::S_assigment: // assigment
+      case symbol_kind::S_statement: // statement
         value.move< Node* > (YY_MOVE (s.value));
         break;
 
@@ -2130,7 +2227,7 @@ switch (yykind)
 
 #line 5 "parser.y"
 } //  Cd 
-#line 2134 "parser.h"
+#line 2231 "parser.h"
 
 
 

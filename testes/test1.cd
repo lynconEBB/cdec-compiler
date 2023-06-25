@@ -1,4 +1,3 @@
-continue;
-int b = 'f';
+int b = while;
 char c = (43 / 34 * 'b');
 char c = 54.;
