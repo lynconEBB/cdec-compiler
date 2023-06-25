@@ -1,11 +1,10 @@
+import "fdsfd";
 int c = 65;
-char b = 45, y, u, v;
+char b = 45, w[4] = {5,'6',54.}, u, v;
 char a = 76;
-refds while;
+str y = "bgfdgfgfdfgdfgdf";
 
-while ( fdsfsd )
-{
-    while (fds) {
-        rere while;
-    } 
-}
+a = 5 + 5.4;
+print(t);
+print("sdfsd");
+scan(y);

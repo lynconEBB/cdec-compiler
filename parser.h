@@ -422,6 +422,8 @@ namespace  Cd  {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // imports
+      // import
       // declarations
       // declaration
       // type
@@ -442,6 +444,7 @@ namespace  Cd  {
       // while_statement
       // tail
       // assignment
+      // io_statement
       // statement
       char dummy1[sizeof (Node*)];
 
@@ -453,12 +456,13 @@ namespace  Cd  {
       // FLOAT
       // DOUBLE
       // VOID
+      // STRING
       char dummy3[sizeof (TokenType)];
 
       // ILIT
       // FLIT
       // CHLIT
-      // STRING
+      // STRLIT
       char dummy4[sizeof (std::variant<int,double,char,std::string>)];
     };
 
@@ -511,40 +515,44 @@ namespace  Cd  {
     FLOAT = 260,                   // FLOAT
     DOUBLE = 261,                  // DOUBLE
     VOID = 262,                    // VOID
-    COMMA = 263,                   // COMMA
-    LPAREN = 264,                  // LPAREN
-    RPAREN = 265,                  // RPAREN
-    LBRACK = 266,                  // LBRACK
-    RBRACK = 267,                  // RBRACK
-    LBRACE = 268,                  // LBRACE
-    RBRACE = 269,                  // RBRACE
-    SEMI = 270,                    // SEMI
-    ASSIGN = 271,                  // ASSIGN
-    REFER = 272,                   // REFER
-    IF = 273,                      // IF
-    ELSE = 274,                    // ELSE
-    WHILE = 275,                   // WHILE
-    FOR = 276,                     // FOR
-    CONTINUE = 277,                // CONTINUE
-    BREAK = 278,                   // BREAK
-    RETURN = 279,                  // RETURN
-    ADD = 280,                     // ADD
-    SUB = 281,                     // SUB
-    MUL = 282,                     // MUL
-    DIV = 283,                     // DIV
-    INC = 284,                     // INC
-    DEC = 285,                     // DEC
-    OR = 286,                      // OR
-    AND = 287,                     // AND
-    NOT = 288,                     // NOT
-    EQU = 289,                     // EQU
-    REL = 290,                     // REL
-    MINUS = 291,                   // MINUS
-    ILIT = 292,                    // ILIT
-    FLIT = 293,                    // FLIT
-    CHLIT = 294,                   // CHLIT
-    STRING = 295,                  // STRING
-    ID = 296                       // ID
+    STRING = 263,                  // STRING
+    COMMA = 264,                   // COMMA
+    LPAREN = 265,                  // LPAREN
+    RPAREN = 266,                  // RPAREN
+    LBRACK = 267,                  // LBRACK
+    RBRACK = 268,                  // RBRACK
+    LBRACE = 269,                  // LBRACE
+    RBRACE = 270,                  // RBRACE
+    SEMI = 271,                    // SEMI
+    ASSIGN = 272,                  // ASSIGN
+    REFER = 273,                   // REFER
+    IF = 274,                      // IF
+    ELSE = 275,                    // ELSE
+    WHILE = 276,                   // WHILE
+    FOR = 277,                     // FOR
+    CONTINUE = 278,                // CONTINUE
+    BREAK = 279,                   // BREAK
+    RETURN = 280,                  // RETURN
+    IMPORT = 281,                  // IMPORT
+    PRINT = 282,                   // PRINT
+    SCAN = 283,                    // SCAN
+    ADD = 284,                     // ADD
+    SUB = 285,                     // SUB
+    MUL = 286,                     // MUL
+    DIV = 287,                     // DIV
+    INC = 288,                     // INC
+    DEC = 289,                     // DEC
+    OR = 290,                      // OR
+    AND = 291,                     // AND
+    NOT = 292,                     // NOT
+    EQU = 293,                     // EQU
+    REL = 294,                     // REL
+    ILIT = 295,                    // ILIT
+    FLIT = 296,                    // FLIT
+    CHLIT = 297,                   // CHLIT
+    STRLIT = 298,                  // STRLIT
+    ID = 299,                      // ID
+    MINUS = 300                    // MINUS
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -561,7 +569,7 @@ namespace  Cd  {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 42, ///< Number of tokens.
+        YYNTOKENS = 46, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -571,63 +579,70 @@ namespace  Cd  {
         S_FLOAT = 5,                             // FLOAT
         S_DOUBLE = 6,                            // DOUBLE
         S_VOID = 7,                              // VOID
-        S_COMMA = 8,                             // COMMA
-        S_LPAREN = 9,                            // LPAREN
-        S_RPAREN = 10,                           // RPAREN
-        S_LBRACK = 11,                           // LBRACK
-        S_RBRACK = 12,                           // RBRACK
-        S_LBRACE = 13,                           // LBRACE
-        S_RBRACE = 14,                           // RBRACE
-        S_SEMI = 15,                             // SEMI
-        S_ASSIGN = 16,                           // ASSIGN
-        S_REFER = 17,                            // REFER
-        S_IF = 18,                               // IF
-        S_ELSE = 19,                             // ELSE
-        S_WHILE = 20,                            // WHILE
-        S_FOR = 21,                              // FOR
-        S_CONTINUE = 22,                         // CONTINUE
-        S_BREAK = 23,                            // BREAK
-        S_RETURN = 24,                           // RETURN
-        S_ADD = 25,                              // ADD
-        S_SUB = 26,                              // SUB
-        S_MUL = 27,                              // MUL
-        S_DIV = 28,                              // DIV
-        S_INC = 29,                              // INC
-        S_DEC = 30,                              // DEC
-        S_OR = 31,                               // OR
-        S_AND = 32,                              // AND
-        S_NOT = 33,                              // NOT
-        S_EQU = 34,                              // EQU
-        S_REL = 35,                              // REL
-        S_MINUS = 36,                            // MINUS
-        S_ILIT = 37,                             // ILIT
-        S_FLIT = 38,                             // FLIT
-        S_CHLIT = 39,                            // CHLIT
-        S_STRING = 40,                           // STRING
-        S_ID = 41,                               // ID
-        S_YYACCEPT = 42,                         // $accept
-        S_program = 43,                          // program
-        S_declarations = 44,                     // declarations
-        S_declaration = 45,                      // declaration
-        S_type = 46,                             // type
-        S_names = 47,                            // names
-        S_variable = 48,                         // variable
-        S_array = 49,                            // array
-        S_initialization = 50,                   // initialization
-        S_scalar_initialization = 51,            // scalar_initialization
-        S_vector_initialization = 52,            // vector_initialization
-        S_values = 53,                           // values
-        S_literal = 54,                          // literal
-        S_expression = 55,                       // expression
-        S_statements = 56,                       // statements
-        S_if_statement = 57,                     // if_statement
-        S_else_if = 58,                          // else_if
-        S_optional_else = 59,                    // optional_else
-        S_for_statement = 60,                    // for_statement
-        S_while_statement = 61,                  // while_statement
-        S_tail = 62,                             // tail
-        S_assignment = 63,                       // assignment
-        S_statement = 64                         // statement
+        S_STRING = 8,                            // STRING
+        S_COMMA = 9,                             // COMMA
+        S_LPAREN = 10,                           // LPAREN
+        S_RPAREN = 11,                           // RPAREN
+        S_LBRACK = 12,                           // LBRACK
+        S_RBRACK = 13,                           // RBRACK
+        S_LBRACE = 14,                           // LBRACE
+        S_RBRACE = 15,                           // RBRACE
+        S_SEMI = 16,                             // SEMI
+        S_ASSIGN = 17,                           // ASSIGN
+        S_REFER = 18,                            // REFER
+        S_IF = 19,                               // IF
+        S_ELSE = 20,                             // ELSE
+        S_WHILE = 21,                            // WHILE
+        S_FOR = 22,                              // FOR
+        S_CONTINUE = 23,                         // CONTINUE
+        S_BREAK = 24,                            // BREAK
+        S_RETURN = 25,                           // RETURN
+        S_IMPORT = 26,                           // IMPORT
+        S_PRINT = 27,                            // PRINT
+        S_SCAN = 28,                             // SCAN
+        S_ADD = 29,                              // ADD
+        S_SUB = 30,                              // SUB
+        S_MUL = 31,                              // MUL
+        S_DIV = 32,                              // DIV
+        S_INC = 33,                              // INC
+        S_DEC = 34,                              // DEC
+        S_OR = 35,                               // OR
+        S_AND = 36,                              // AND
+        S_NOT = 37,                              // NOT
+        S_EQU = 38,                              // EQU
+        S_REL = 39,                              // REL
+        S_ILIT = 40,                             // ILIT
+        S_FLIT = 41,                             // FLIT
+        S_CHLIT = 42,                            // CHLIT
+        S_STRLIT = 43,                           // STRLIT
+        S_ID = 44,                               // ID
+        S_MINUS = 45,                            // MINUS
+        S_YYACCEPT = 46,                         // $accept
+        S_program = 47,                          // program
+        S_imports = 48,                          // imports
+        S_import = 49,                           // import
+        S_declarations = 50,                     // declarations
+        S_declaration = 51,                      // declaration
+        S_type = 52,                             // type
+        S_names = 53,                            // names
+        S_variable = 54,                         // variable
+        S_array = 55,                            // array
+        S_initialization = 56,                   // initialization
+        S_scalar_initialization = 57,            // scalar_initialization
+        S_vector_initialization = 58,            // vector_initialization
+        S_values = 59,                           // values
+        S_literal = 60,                          // literal
+        S_expression = 61,                       // expression
+        S_statements = 62,                       // statements
+        S_if_statement = 63,                     // if_statement
+        S_else_if = 64,                          // else_if
+        S_optional_else = 65,                    // optional_else
+        S_for_statement = 66,                    // for_statement
+        S_while_statement = 67,                  // while_statement
+        S_tail = 68,                             // tail
+        S_assignment = 69,                       // assignment
+        S_io_statement = 70,                     // io_statement
+        S_statement = 71                         // statement
       };
     };
 
@@ -662,6 +677,8 @@ namespace  Cd  {
       {
         switch (this->kind ())
     {
+      case symbol_kind::S_imports: // imports
+      case symbol_kind::S_import: // import
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
@@ -682,6 +699,7 @@ namespace  Cd  {
       case symbol_kind::S_while_statement: // while_statement
       case symbol_kind::S_tail: // tail
       case symbol_kind::S_assignment: // assignment
+      case symbol_kind::S_io_statement: // io_statement
       case symbol_kind::S_statement: // statement
         value.move< Node* > (std::move (that.value));
         break;
@@ -695,13 +713,14 @@ namespace  Cd  {
       case symbol_kind::S_FLOAT: // FLOAT
       case symbol_kind::S_DOUBLE: // DOUBLE
       case symbol_kind::S_VOID: // VOID
+      case symbol_kind::S_STRING: // STRING
         value.move< TokenType > (std::move (that.value));
         break;
 
       case symbol_kind::S_ILIT: // ILIT
       case symbol_kind::S_FLIT: // FLIT
       case symbol_kind::S_CHLIT: // CHLIT
-      case symbol_kind::S_STRING: // STRING
+      case symbol_kind::S_STRLIT: // STRLIT
         value.move< std::variant<int,double,char,std::string> > (std::move (that.value));
         break;
 
@@ -798,6 +817,8 @@ namespace  Cd  {
         // Value type destructor.
 switch (yykind)
     {
+      case symbol_kind::S_imports: // imports
+      case symbol_kind::S_import: // import
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
@@ -818,6 +839,7 @@ switch (yykind)
       case symbol_kind::S_while_statement: // while_statement
       case symbol_kind::S_tail: // tail
       case symbol_kind::S_assignment: // assignment
+      case symbol_kind::S_io_statement: // io_statement
       case symbol_kind::S_statement: // statement
         value.template destroy< Node* > ();
         break;
@@ -831,13 +853,14 @@ switch (yykind)
       case symbol_kind::S_FLOAT: // FLOAT
       case symbol_kind::S_DOUBLE: // DOUBLE
       case symbol_kind::S_VOID: // VOID
+      case symbol_kind::S_STRING: // STRING
         value.template destroy< TokenType > ();
         break;
 
       case symbol_kind::S_ILIT: // ILIT
       case symbol_kind::S_FLIT: // FLIT
       case symbol_kind::S_CHLIT: // CHLIT
-      case symbol_kind::S_STRING: // STRING
+      case symbol_kind::S_STRLIT: // STRLIT
         value.template destroy< std::variant<int,double,char,std::string> > ();
         break;
 
@@ -937,7 +960,8 @@ switch (yykind)
 #if !defined _MSC_VER || defined __clang__
         YY_ASSERT (tok == token::YYEOF
                    || (token::YYerror <= tok && tok <= token::YYUNDEF)
-                   || (token::COMMA <= tok && tok <= token::MINUS));
+                   || (token::COMMA <= tok && tok <= token::REL)
+                   || tok == token::MINUS);
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -961,7 +985,7 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT ((token::CHAR <= tok && tok <= token::VOID));
+        YY_ASSERT ((token::CHAR <= tok && tok <= token::STRING));
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -973,7 +997,7 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT ((token::ILIT <= tok && tok <= token::STRING));
+        YY_ASSERT ((token::ILIT <= tok && tok <= token::STRLIT));
 #endif
       }
     };
@@ -1146,6 +1170,21 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_STRING (TokenType v)
+      {
+        return symbol_type (token::STRING, std::move (v));
+      }
+#else
+      static
+      symbol_type
+      make_STRING (const TokenType& v)
+      {
+        return symbol_type (token::STRING, v);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_COMMA ()
       {
         return symbol_type (token::COMMA);
@@ -1401,6 +1440,51 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_IMPORT ()
+      {
+        return symbol_type (token::IMPORT);
+      }
+#else
+      static
+      symbol_type
+      make_IMPORT ()
+      {
+        return symbol_type (token::IMPORT);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_PRINT ()
+      {
+        return symbol_type (token::PRINT);
+      }
+#else
+      static
+      symbol_type
+      make_PRINT ()
+      {
+        return symbol_type (token::PRINT);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_SCAN ()
+      {
+        return symbol_type (token::SCAN);
+      }
+#else
+      static
+      symbol_type
+      make_SCAN ()
+      {
+        return symbol_type (token::SCAN);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_ADD ()
       {
         return symbol_type (token::ADD);
@@ -1561,21 +1645,6 @@ switch (yykind)
       make_REL ()
       {
         return symbol_type (token::REL);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_MINUS ()
-      {
-        return symbol_type (token::MINUS);
-      }
-#else
-      static
-      symbol_type
-      make_MINUS ()
-      {
-        return symbol_type (token::MINUS);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1626,16 +1695,16 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_STRING (std::variant<int,double,char,std::string> v)
+      make_STRLIT (std::variant<int,double,char,std::string> v)
       {
-        return symbol_type (token::STRING, std::move (v));
+        return symbol_type (token::STRLIT, std::move (v));
       }
 #else
       static
       symbol_type
-      make_STRING (const std::variant<int,double,char,std::string>& v)
+      make_STRLIT (const std::variant<int,double,char,std::string>& v)
       {
-        return symbol_type (token::STRING, v);
+        return symbol_type (token::STRLIT, v);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1651,6 +1720,21 @@ switch (yykind)
       make_ID (const SymbolInfo*& v)
       {
         return symbol_type (token::ID, v);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_MINUS ()
+      {
+        return symbol_type (token::MINUS);
+      }
+#else
+      static
+      symbol_type
+      make_MINUS ()
+      {
+        return symbol_type (token::MINUS);
       }
 #endif
 
@@ -1972,9 +2056,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 260,     ///< Last index in yytable_.
-      yynnts_ = 23,  ///< Number of nonterminal symbols.
-      yyfinal_ = 12 ///< Termination state number.
+      yylast_ = 287,     ///< Last index in yytable_.
+      yynnts_ = 26,  ///< Number of nonterminal symbols.
+      yyfinal_ = 3 ///< Termination state number.
     };
 
 
@@ -2023,10 +2107,11 @@ switch (yykind)
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38,    39,    40,    41
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45
     };
     // Last valid token kind.
-    const int code_max = 296;
+    const int code_max = 300;
 
     if (t <= 0)
       return symbol_kind::S_YYEOF;
@@ -2044,6 +2129,8 @@ switch (yykind)
   {
     switch (this->kind ())
     {
+      case symbol_kind::S_imports: // imports
+      case symbol_kind::S_import: // import
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
@@ -2064,6 +2151,7 @@ switch (yykind)
       case symbol_kind::S_while_statement: // while_statement
       case symbol_kind::S_tail: // tail
       case symbol_kind::S_assignment: // assignment
+      case symbol_kind::S_io_statement: // io_statement
       case symbol_kind::S_statement: // statement
         value.copy< Node* > (YY_MOVE (that.value));
         break;
@@ -2077,13 +2165,14 @@ switch (yykind)
       case symbol_kind::S_FLOAT: // FLOAT
       case symbol_kind::S_DOUBLE: // DOUBLE
       case symbol_kind::S_VOID: // VOID
+      case symbol_kind::S_STRING: // STRING
         value.copy< TokenType > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_ILIT: // ILIT
       case symbol_kind::S_FLIT: // FLIT
       case symbol_kind::S_CHLIT: // CHLIT
-      case symbol_kind::S_STRING: // STRING
+      case symbol_kind::S_STRLIT: // STRLIT
         value.copy< std::variant<int,double,char,std::string> > (YY_MOVE (that.value));
         break;
 
@@ -2118,6 +2207,8 @@ switch (yykind)
     super_type::move (s);
     switch (this->kind ())
     {
+      case symbol_kind::S_imports: // imports
+      case symbol_kind::S_import: // import
       case symbol_kind::S_declarations: // declarations
       case symbol_kind::S_declaration: // declaration
       case symbol_kind::S_type: // type
@@ -2138,6 +2229,7 @@ switch (yykind)
       case symbol_kind::S_while_statement: // while_statement
       case symbol_kind::S_tail: // tail
       case symbol_kind::S_assignment: // assignment
+      case symbol_kind::S_io_statement: // io_statement
       case symbol_kind::S_statement: // statement
         value.move< Node* > (YY_MOVE (s.value));
         break;
@@ -2151,13 +2243,14 @@ switch (yykind)
       case symbol_kind::S_FLOAT: // FLOAT
       case symbol_kind::S_DOUBLE: // DOUBLE
       case symbol_kind::S_VOID: // VOID
+      case symbol_kind::S_STRING: // STRING
         value.move< TokenType > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_ILIT: // ILIT
       case symbol_kind::S_FLIT: // FLIT
       case symbol_kind::S_CHLIT: // CHLIT
-      case symbol_kind::S_STRING: // STRING
+      case symbol_kind::S_STRLIT: // STRLIT
         value.move< std::variant<int,double,char,std::string> > (YY_MOVE (s.value));
         break;
 
@@ -2227,7 +2320,7 @@ switch (yykind)
 
 #line 5 "parser.y"
 } //  Cd 
-#line 2231 "parser.h"
+#line 2324 "parser.h"
 
 
 

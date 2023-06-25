@@ -63,11 +63,15 @@ STRING			\"{printable}*\"
 "while"					{ RETURN_TOKEN(WHILE); }
 "for"					{ RETURN_TOKEN(FOR); }
 "if"					{ RETURN_TOKEN(IF); }
+"import"				{ RETURN_TOKEN(IMPORT);}
+"print"					{ RETURN_TOKEN(PRINT);}
+"scan"					{ RETURN_TOKEN(SCAN);}
 "void"					{ RETURN_TOKEN(VOID, TokenType::VOID); }
 "char"  		     	{ RETURN_TOKEN(CHAR, TokenType::CHAR); }
 "int"					{ RETURN_TOKEN(INT, TokenType::INT);}
 "float"					{ RETURN_TOKEN(FLOAT, TokenType::REAL);}
 "double"				{ RETURN_TOKEN(DOUBLE, TokenType::REAL);}
+"str"					{ RETURN_TOKEN(STRING, TokenType::STR);}
 
 "!"						{ RETURN_TOKEN(NOT); }
 "=="   				    { RETURN_TOKEN(EQU); }
@@ -131,7 +135,7 @@ STRING			\"{printable}*\"
 							return type;
  						}
 {STRING} 				{ 
-	      					const Cd::Parser::symbol_type& type = Cd::Parser::make_STRING(yytext); 
+	      					const Cd::Parser::symbol_type& type = Cd::Parser::make_STRLIT(yytext); 
 							SymbolInfo* info = m_driver.m_symbolTable.insert(yytext, type);
 							info->type = TokenType::STR;
 							info->value = yytext;
