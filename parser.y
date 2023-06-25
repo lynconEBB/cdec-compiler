@@ -8,7 +8,7 @@
 %define api.value.type variant
 %define parse.assert
 
-%expect 1
+%expect 2
 
 // parser.h
 %code requires
@@ -66,7 +66,7 @@
 %right NOT INC DEC REFER MINUS
 %left LPAREN RPAREN LBRACK RBRACK
 
-%type<Node*> declaration declarations statement assigment values statements 
+%type<Node*> declaration declarations statement assignment values statements 
 %type<Node*> literal array expression if_statement while_statement else_if optional_else tail for_statement
 %type<Node*> type names variable initialization scalar_initialization vector_initialization
 
@@ -82,8 +82,6 @@ program:
         driver.printAST(node);
     }
 ;
-
-declarations: declarations declaration | declaration
 
 declarations:
     declarations declaration
@@ -109,11 +107,33 @@ declaration:
         $$->addChild($1);
         $$->addChild($2);
         $$->addChild(new Node("SEMI"));
+
+        std::vector<Node*> variables = $2->getChildsByName("variable");
+        for (Node* n : variables) {
+            SymbolInfo* symbol = driver.m_symbolTable.find(std::get<std::string>(n->value)); 
+            symbol->type = $1->type;
+        }
+
+        std::vector<Node*> initializations = $2->getChildsByName("initialization");
+        for (Node* n : initializations) {
+            std::cout << typeToStr(n->type) << " " << typeToStr($1->type) << std::endl; 
+            if (n->type != $1->type) {
+                std::cout << "[Erro semantico] Tentativa de atribuir valor " << typeToStr(n->type) << " a variavel " 
+                << std::get<std::string>(n->children[0]->children[0]->value) << " do tipo " << typeToStr($1->type) << " na linha: " 
+                << driver.lineNumber << std::endl;
+            } else {
+                SymbolInfo* symbol = driver.m_symbolTable.find(std::get<std::string>(n->children[0]->children[0]->value)); 
+                symbol->type = $1->type;
+                symbol->value = n->value;
+            }
+        }
     }
     | error SEMI {
-        std::cout << "[Erro sintático] Não  " << std::endl;
-        yyerrok;
-        yyclearin;
+        std::cout << "[Erro sintático] Não foi possível realizar a declaração da variavel na linha: " << driver.lineNumber << std::endl;
+        $$ = new Node("error");
+    }
+    | error RBRACE {
+        std::cout << "[Erro sintático] Bloco encontrado anteriormente a todas as declarações na linha : " << driver.lineNumber << std::endl;
         $$ = new Node("error");
     }
 ;
@@ -171,13 +191,14 @@ names:
 variable:
     ID
     {
-        $$ = new Node("variable");
-        $$->addChild(new Node("ID"));
+        $$ = new Node("variable", TokenType::ARRAY, $1->name);
+        $$->addChild(new Node("ID", TokenType::UNDEFINED, $1->name));
+
     }
     | ID array
     {
-        $$ = new Node("variable");
-        $$->addChild(new Node("ID"));
+        $$ = new Node("variable", TokenType::ARRAY, $1->name);
+        $$->addChild(new Node("ID", TokenType::ARRAY, $1->name));
         $$->addChild($2);
     }
 ;
@@ -202,7 +223,7 @@ array:
 initialization:
     scalar_initialization
     { 
-        $$ = new Node("initialization");
+        $$ = new Node("initialization", $1->type, $1->value);
         $$->addChild($1);
     }
     | vector_initialization
@@ -213,10 +234,13 @@ initialization:
 ;
 
 scalar_initialization:
-    ID ASSIGN expression
+    ID ASSIGN literal
     {
-        $$ = new Node("scalar_initialization"); 
-        $$->addChild(new Node("ID"));
+        $$ = new Node("scalar_initialization", $3->type, $3->value); 
+        $$->type = $3->type;
+        $$->value = $3->value;
+
+        $$->addChild(new Node("ID", $3->type, $3->value));
         $$->addChild(new Node("ASSIGN"));
         $$->addChild($3);
     }
@@ -238,7 +262,9 @@ vector_initialization:
 values:
     values COMMA literal
     {
-        Node* node = new Node("literal");     
+        Node* node = new Node("values");     
+        node->type = $3->type;
+        node->value = $3->value;
         node->addChild($1);
         node->addChild(new Node("COMMA"));
         node->addChild($3);
@@ -246,7 +272,9 @@ values:
     }
     | literal
     {
-        Node* node = new Node("literal");     
+        Node* node = new Node("values");     
+        node->type = $1->type;
+        node->value = $1->value;
         node->addChild($1);
         $$ = node;
     }
@@ -279,6 +307,9 @@ literal:
 expression:
     expression ADD expression
 	{ 
+        if ($1->type != $3->type) {
+            error("[Erro Semantico]: Tipos incopativeis encontrados durante uma expressão de soma");
+        }
         $$ = new Node("expression", $1->type, $1->value);
         $$->addChild($1);
         $$->addChild(new Node("ADD"));
@@ -286,6 +317,9 @@ expression:
 	}
     | expression SUB expression
 	{ 
+        if ($1->type != $3->type) {
+            error("[Erro Semantico]: Tipos incopativeis encontrados durante uma expressão de soma");
+        }
         $$ = new Node("expression", $1->type, $1->value);
         $$->addChild($1);
         $$->addChild(new Node("SUB"));
@@ -417,6 +451,11 @@ if_statement:
         $$->addChild($5);
         $$->addChild($6);
 	}
+    | IF error RBRACE
+    {
+        std::cout << "[Erro sintático] Bloco if com erro terminado na linha: " << driver.lineNumber << std::endl;
+        $$ = new Node("error");
+    }
 ;
 
 else_if:
@@ -441,6 +480,11 @@ else_if:
         $$->addChild(new Node("RPAREN"));
         $$->addChild($6);
 	}
+    | ELSE error RBRACE
+    {
+        std::cout << "[Erro sintático] Bloco else com erro terminado na linha: " << driver.lineNumber << std::endl;
+        $$ = new Node("error");
+    }
 ;
 
 optional_else:
@@ -451,12 +495,12 @@ optional_else:
         $$->addChild($2);
 	}
 	| %empty {
-		$$ = nullptr;
+        $$ = new Node("optional_else");
 	}
 ;
 
 for_statement: 
-    FOR LPAREN assigment SEMI expression SEMI ID INC RPAREN tail
+    FOR LPAREN assignment SEMI expression SEMI ID INC RPAREN tail
     {
         $$ = new Node("for_statement");
         $$->addChild(new Node("FOR"));
@@ -470,7 +514,7 @@ for_statement:
         $$->addChild(new Node("RPAREN"));
         $$->addChild($10);
     }
-    | FOR LPAREN assigment SEMI expression SEMI ID DEC RPAREN tail
+    | FOR LPAREN assignment SEMI expression SEMI ID DEC RPAREN tail
     {
         $$ = new Node("for_statement");
         $$->addChild(new Node("FOR"));
@@ -484,6 +528,11 @@ for_statement:
         $$->addChild(new Node("RPAREN"));
         $$->addChild($10);
     }
+    | FOR error RBRACE
+    {
+        std::cout << "[Erro sintático] Bloco FOR com erro terminado na linha: " << driver.lineNumber << std::endl;
+        $$ = new Node("error");
+    }
 ;
 
 while_statement: 
@@ -495,6 +544,11 @@ while_statement:
         $$->addChild($3);
         $$->addChild(new Node("RPAREN"));
         $$->addChild($5);
+    }
+    | WHILE error RBRACE
+    {
+        std::cout << "[Erro sintático] Bloco WHILE com erro terminado na linha: " << driver.lineNumber << std::endl;
+        $$ = new Node("error");
     }
 ;
 
@@ -508,10 +562,17 @@ tail:
     }
 ;
 
-assigment: 
+assignment: 
     variable ASSIGN expression
     {
-        $$ = new Node("assigment");
+        $$ = new Node("assignment");
+
+        SymbolInfo* info = driver.m_symbolTable.find($1->name);
+        if (info->type != $3->type) {
+            std::cout << "[Erro semantico] Tentativa de atribuir valor " << typeToStr($3->type) << " a variavel " 
+            << info->name << " do tipo " << typeToStr($3->type) << " na linha: " << driver.lineNumber << std::endl;
+        }
+
         $$->addChild($1);
         $$->addChild(new Node("ASSIGN"));
         $$->addChild($3);
@@ -534,7 +595,7 @@ statement:
         $$ = new Node("statement");
         $$->addChild($1);
 	}
-	| assigment SEMI
+	| assignment SEMI
 	{
         $$ = new Node("statement");
         $$->addChild($1);
@@ -580,13 +641,18 @@ statement:
         $$->addChild(new Node("ID"));
         $$->addChild(new Node("SEMI"));
 	}
+    | error SEMI
+    {
+        std::cout << "[Erro sintático] Expressão mal formatada na linha: " << driver.lineNumber << std::endl;
+        $$ = new Node("error");
+    }
 ;
 
 %%
 
-void Cd::Parser::error(const std::string& message) {
-    std::cout << "AAAA no" << driver.lineNumber  << std::endl;
-    std::cout << message << std::endl;
+void Cd::Parser::error(const std::string& message) 
+{
+    std::cout << "[Error sintático] Na linha: " << driver.lineNumber << ' ' <<  message << std::endl;
 }
 
 void Cd::Parser::report_syntax_error (const context& ctx) const
@@ -612,5 +678,5 @@ void Cd::Parser::report_syntax_error (const context& ctx) const
     if (lookahead != symbol_kind::S_YYEMPTY)
       std::cout << " porém foi colocado " << symbol_name (lookahead);
     }
-    std::cout << '\n';
+    std::cout << " na linha " << driver.lineNumber << '\n';
 }

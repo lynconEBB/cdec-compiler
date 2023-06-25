@@ -6,10 +6,10 @@
 
 namespace Cd 
 {
-    const std::string typeStr[] = {
-        "UNDEFINED", "INT", "REAL",
-        "CHAR", "STR", "ARRAY", "FUNCTION", "VOID"
-    };
+    std::string typeToStr(TokenType type)
+    {
+        return typeStr[static_cast<unsigned int>(type)];
+    }
 
     void SymbolTable::print()
     {

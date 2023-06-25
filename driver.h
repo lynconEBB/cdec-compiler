@@ -16,7 +16,7 @@ public:
     void init();
     void printAST(Node* node);
 public:
-    int lineNumber = 0;
+    int lineNumber = 1;
     SymbolTable m_symbolTable;
 
 private:

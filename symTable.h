@@ -58,6 +58,13 @@ using SymIterator = std::unordered_map<std::string, SymbolInfo*>::iterator;
 namespace Cd
 {
 
+inline const std::string typeStr[] = {
+    "UNDEFINED", "INT", "REAL",
+    "CHAR", "STR", "ARRAY", "FUNCTION", "VOID"
+};
+
+std::string typeToStr(TokenType type);
+
 class SymbolTable {
 public:
     SymbolTable(Cd::Driver& driver) : m_driver(driver) { }

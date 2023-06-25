@@ -441,7 +441,7 @@ namespace  Cd  {
       // for_statement
       // while_statement
       // tail
-      // assigment
+      // assignment
       // statement
       char dummy1[sizeof (Node*)];
 
@@ -626,7 +626,7 @@ namespace  Cd  {
         S_for_statement = 60,                    // for_statement
         S_while_statement = 61,                  // while_statement
         S_tail = 62,                             // tail
-        S_assigment = 63,                        // assigment
+        S_assignment = 63,                       // assignment
         S_statement = 64                         // statement
       };
     };
@@ -681,7 +681,7 @@ namespace  Cd  {
       case symbol_kind::S_for_statement: // for_statement
       case symbol_kind::S_while_statement: // while_statement
       case symbol_kind::S_tail: // tail
-      case symbol_kind::S_assigment: // assigment
+      case symbol_kind::S_assignment: // assignment
       case symbol_kind::S_statement: // statement
         value.move< Node* > (std::move (that.value));
         break;
@@ -817,7 +817,7 @@ switch (yykind)
       case symbol_kind::S_for_statement: // for_statement
       case symbol_kind::S_while_statement: // while_statement
       case symbol_kind::S_tail: // tail
-      case symbol_kind::S_assigment: // assigment
+      case symbol_kind::S_assignment: // assignment
       case symbol_kind::S_statement: // statement
         value.template destroy< Node* > ();
         break;
@@ -1723,7 +1723,7 @@ switch (yykind)
     static const short yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
-    static const signed char yydefgoto_[];
+    static const unsigned char yydefgoto_[];
 
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
@@ -1972,9 +1972,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 248,     ///< Last index in yytable_.
+      yylast_ = 260,     ///< Last index in yytable_.
       yynnts_ = 23,  ///< Number of nonterminal symbols.
-      yyfinal_ = 11 ///< Termination state number.
+      yyfinal_ = 12 ///< Termination state number.
     };
 
 
@@ -2063,7 +2063,7 @@ switch (yykind)
       case symbol_kind::S_for_statement: // for_statement
       case symbol_kind::S_while_statement: // while_statement
       case symbol_kind::S_tail: // tail
-      case symbol_kind::S_assigment: // assigment
+      case symbol_kind::S_assignment: // assignment
       case symbol_kind::S_statement: // statement
         value.copy< Node* > (YY_MOVE (that.value));
         break;
@@ -2137,7 +2137,7 @@ switch (yykind)
       case symbol_kind::S_for_statement: // for_statement
       case symbol_kind::S_while_statement: // while_statement
       case symbol_kind::S_tail: // tail
-      case symbol_kind::S_assigment: // assigment
+      case symbol_kind::S_assignment: // assignment
       case symbol_kind::S_statement: // statement
         value.move< Node* > (YY_MOVE (s.value));
         break;
