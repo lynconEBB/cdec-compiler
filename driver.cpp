@@ -1,42 +1,44 @@
 #include "driver.h"
 #include <iostream>
+#include <fstream>
+#include <filesystem>
 
 namespace Cd
 {
 
-
 void Driver::init() {
     int a = m_parser.parse();
-    if (a == 0) {
-        std::cout << "DEU" << std::endl;
-    } else {
-        std::cout << "Nao DEU" << std::endl;
-    }
     m_symbolTable.print();
+    std::cout << "Compilação finalizada!" << std::endl;
 }
 
-void recursivePrint(Node* node, int tabs)
+void recursivePrint(Node* node, int tabs, std::ostream& out)
 {
     for (int i = 0; i < tabs; i++) {
         if (i == tabs-1) {
-            std::cout << " |--";
+            out << " |--";
         } else {
-            std::cout << " |  ";
+            out << " |  ";
         }
     }
 
-    std::cout << node->name << " " << node->children.size() << '\n';
+    out << node->name << " " << node->children.size() << '\n';
 
     for (Node* child : node->children) {
-        recursivePrint(child, tabs + 1);
+        recursivePrint(child, tabs + 1, out);
     }
 }
 
 void Driver::printAST(Node* node) 
 {
-    std::cout << "========= Árvore Sintática ============\n";
-    recursivePrint(node, 0); 
-}
+    std::filesystem::path path(m_filename);
+    path = path.replace_extension("txt");
+    std::string singleFileName = path.filename();
+    std::cout << "Gerando arvore sintatica no arquivo: arvores_" << singleFileName << std::endl;
+    std::ofstream outfile("arvores_" + singleFileName, std::ios::out);
 
+    outfile << "============ Árvore Sintática ============\n";
+    recursivePrint(node, 0, outfile); 
+}
 
 }

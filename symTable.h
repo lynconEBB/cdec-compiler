@@ -72,6 +72,7 @@ public:
     SymbolInfo* insert(const std::string& name, Cd::Parser::symbol_type classType);
     SymbolInfo* insert(const std::string& name);
     SymbolInfo* find(const std::string& name);
+    void logPrint(SymbolInfo* info, bool firstInsertion);
     void print();
 
 private:

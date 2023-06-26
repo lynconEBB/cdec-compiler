@@ -784,7 +784,7 @@ namespace  Cd  {
     break;
 
   case 6: // declarations: declarations declaration
-#line 112 "parser.y"
+#line 111 "parser.y"
     {
         Node* node = new Node("declarations");
         node->addChild(yystack_[1].value.as < Node* > ());
@@ -795,7 +795,7 @@ namespace  Cd  {
     break;
 
   case 7: // declarations: declaration
-#line 119 "parser.y"
+#line 118 "parser.y"
     {
         Node* node = new Node("declarations");
         node->addChild(yystack_[0].value.as < Node* > ());
@@ -805,7 +805,7 @@ namespace  Cd  {
     break;
 
   case 8: // declaration: type names SEMI
-#line 128 "parser.y"
+#line 127 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("declaration");
         yylhs.value.as < Node* > ()->type = yystack_[2].value.as < Node* > ()->type;
@@ -848,7 +848,7 @@ namespace  Cd  {
     break;
 
   case 9: // declaration: error SEMI
-#line 166 "parser.y"
+#line 165 "parser.y"
                  {
         std::cout << "[Erro sintático] Não foi possível realizar a declaração da variavel na linha: " << driver.lineNumber << std::endl;
         yylhs.value.as < Node* > () = new Node("error");
@@ -857,7 +857,7 @@ namespace  Cd  {
     break;
 
   case 10: // declaration: error RBRACE
-#line 170 "parser.y"
+#line 169 "parser.y"
                    {
         std::cout << "[Erro sintático] Bloco encontrado anteriormente a todas as declarações na linha : " << driver.lineNumber << std::endl;
         yylhs.value.as < Node* > () = new Node("error");
@@ -866,7 +866,7 @@ namespace  Cd  {
     break;
 
   case 11: // type: INT
-#line 178 "parser.y"
+#line 177 "parser.y"
     { 
         yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); 
         yylhs.value.as < Node* > ()->addChild(new Node("INT", yystack_[0].value.as < TokenType > ()));
@@ -875,7 +875,7 @@ namespace  Cd  {
     break;
 
   case 12: // type: CHAR
-#line 183 "parser.y"
+#line 182 "parser.y"
     { 
         yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); 
         yylhs.value.as < Node* > ()->addChild(new Node("CHAR", yystack_[0].value.as < TokenType > ()));
@@ -884,7 +884,7 @@ namespace  Cd  {
     break;
 
   case 13: // type: FLOAT
-#line 188 "parser.y"
+#line 187 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); 
         yylhs.value.as < Node* > ()->addChild(new Node("FLOAT", yystack_[0].value.as < TokenType > ()));
@@ -893,7 +893,7 @@ namespace  Cd  {
     break;
 
   case 14: // type: DOUBLE
-#line 193 "parser.y"
+#line 192 "parser.y"
     { 
         yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); 
         yylhs.value.as < Node* > ()->addChild(new Node("DOUBLE", yystack_[0].value.as < TokenType > ()));
@@ -902,7 +902,7 @@ namespace  Cd  {
     break;
 
   case 15: // type: STRING
-#line 198 "parser.y"
+#line 197 "parser.y"
     { 
         yylhs.value.as < Node* > () = new Node("type", yystack_[0].value.as < TokenType > ()); 
         yylhs.value.as < Node* > ()->addChild(new Node("STRING", yystack_[0].value.as < TokenType > ()));
@@ -911,7 +911,7 @@ namespace  Cd  {
     break;
 
   case 16: // names: names COMMA variable
-#line 206 "parser.y"
+#line 205 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("names");
         yylhs.value.as < Node* > ()->addChild(yystack_[2].value.as < Node* > ());
@@ -922,7 +922,7 @@ namespace  Cd  {
     break;
 
   case 17: // names: names COMMA initialization
-#line 213 "parser.y"
+#line 212 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("names");
         yylhs.value.as < Node* > ()->addChild(yystack_[2].value.as < Node* > ());
@@ -933,7 +933,7 @@ namespace  Cd  {
     break;
 
   case 18: // names: variable
-#line 220 "parser.y"
+#line 219 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("names");
         yylhs.value.as < Node* > ()->addChild(yystack_[0].value.as < Node* > ());
@@ -942,7 +942,7 @@ namespace  Cd  {
     break;
 
   case 19: // names: initialization
-#line 225 "parser.y"
+#line 224 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("names");
         yylhs.value.as < Node* > ()->addChild(yystack_[0].value.as < Node* > ());
@@ -951,7 +951,7 @@ namespace  Cd  {
     break;
 
   case 20: // variable: ID
-#line 233 "parser.y"
+#line 232 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("variable", TokenType::UNDEFINED, yystack_[0].value.as < SymbolInfo* > ()->name);
         yylhs.value.as < Node* > ()->addChild(new Node("ID", TokenType::UNDEFINED, yystack_[0].value.as < SymbolInfo* > ()->name));
@@ -960,7 +960,7 @@ namespace  Cd  {
     break;
 
   case 21: // variable: ID array
-#line 238 "parser.y"
+#line 237 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("variable", TokenType::ARRAY, yystack_[1].value.as < SymbolInfo* > ()->name);
         yylhs.value.as < Node* > ()->addChild(new Node("ID", TokenType::ARRAY, yystack_[1].value.as < SymbolInfo* > ()->name));
@@ -970,7 +970,7 @@ namespace  Cd  {
     break;
 
   case 22: // array: LBRACK expression RBRACK
-#line 247 "parser.y"
+#line 246 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("array",TokenType::ARRAY);
         yylhs.value.as < Node* > ()->addChild(new Node("LBRACK"));
@@ -981,7 +981,7 @@ namespace  Cd  {
     break;
 
   case 23: // array: LBRACK ILIT RBRACK
-#line 254 "parser.y"
+#line 253 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("array",TokenType::ARRAY);
         yylhs.value.as < Node* > ()->addChild(new Node("LBRACK"));
@@ -992,7 +992,7 @@ namespace  Cd  {
     break;
 
   case 24: // initialization: scalar_initialization
-#line 264 "parser.y"
+#line 263 "parser.y"
     { 
         yylhs.value.as < Node* > () = new Node("initialization", yystack_[0].value.as < Node* > ()->type, yystack_[0].value.as < Node* > ()->value);
         yylhs.value.as < Node* > ()->addChild(yystack_[0].value.as < Node* > ());
@@ -1001,7 +1001,7 @@ namespace  Cd  {
     break;
 
   case 25: // initialization: vector_initialization
-#line 269 "parser.y"
+#line 268 "parser.y"
     { 
         yylhs.value.as < Node* > () = new Node("initialization");
         yylhs.value.as < Node* > ()->addChild(yystack_[0].value.as < Node* > ());
@@ -1010,7 +1010,7 @@ namespace  Cd  {
     break;
 
   case 26: // scalar_initialization: ID ASSIGN literal
-#line 277 "parser.y"
+#line 276 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("scalar_initialization", yystack_[0].value.as < Node* > ()->type, yystack_[0].value.as < Node* > ()->value); 
         yylhs.value.as < Node* > ()->type = yystack_[0].value.as < Node* > ()->type;
@@ -1024,7 +1024,7 @@ namespace  Cd  {
     break;
 
   case 27: // vector_initialization: ID array ASSIGN LBRACE values RBRACE
-#line 290 "parser.y"
+#line 289 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("vector_initialization");     
         yylhs.value.as < Node* > ()->addChild(new Node("ID", TokenType::UNDEFINED, yystack_[5].value.as < SymbolInfo* > ()->name));
@@ -1038,7 +1038,7 @@ namespace  Cd  {
     break;
 
   case 28: // values: values COMMA literal
-#line 303 "parser.y"
+#line 302 "parser.y"
     {
         if (yystack_[0].value.as < Node* > ()->type != yystack_[2].value.as < Node* > ()->type) {
             std::cout << "[Error semantico] Tipos incopativeis detectados durante inicialiação do vetor na linha: " << driver.lineNumber << std::endl;
@@ -1055,7 +1055,7 @@ namespace  Cd  {
     break;
 
   case 29: // values: literal
-#line 316 "parser.y"
+#line 315 "parser.y"
     {
         Node* node = new Node("values");     
         node->type = yystack_[0].value.as < Node* > ()->type;
@@ -1067,7 +1067,7 @@ namespace  Cd  {
     break;
 
   case 30: // literal: ILIT
-#line 327 "parser.y"
+#line 326 "parser.y"
     { 
         Node* node = new Node("ILIT");     
         node->type = TokenType::INT;
@@ -1078,7 +1078,7 @@ namespace  Cd  {
     break;
 
   case 31: // literal: FLIT
-#line 334 "parser.y"
+#line 333 "parser.y"
     {
         Node* node = new Node("FLIT");     
         node->type = TokenType::REAL;
@@ -1089,7 +1089,7 @@ namespace  Cd  {
     break;
 
   case 32: // literal: CHLIT
-#line 341 "parser.y"
+#line 340 "parser.y"
     {
         Node* node = new Node("CHLIT");     
         node->type = TokenType::CHAR;
@@ -1100,7 +1100,7 @@ namespace  Cd  {
     break;
 
   case 33: // literal: STRLIT
-#line 348 "parser.y"
+#line 347 "parser.y"
     {
         Node* node = new Node("STRLIT");     
         node->type = TokenType::STR;
@@ -1111,10 +1111,10 @@ namespace  Cd  {
     break;
 
   case 34: // expression: expression ADD expression
-#line 358 "parser.y"
+#line 357 "parser.y"
         { 
         if (yystack_[2].value.as < Node* > ()->type != yystack_[0].value.as < Node* > ()->type) {
-            std::cout << "[Erro Semantico]: Tipos incopativeis encontrados durante uma expressão de soma na linha: " << driver.lineNumber << std::endl;
+            std::cout << "[Erro Semantico] Tipos incopativeis encontrados durante uma expressão de soma na linha: " << driver.lineNumber << std::endl;
             yylhs.value.as < Node* > () = new Node("error");
         } else {
             yylhs.value.as < Node* > () = new Node("expression", yystack_[2].value.as < Node* > ()->type, yystack_[2].value.as < Node* > ()->value);
@@ -1127,10 +1127,10 @@ namespace  Cd  {
     break;
 
   case 35: // expression: expression SUB expression
-#line 370 "parser.y"
+#line 369 "parser.y"
         { 
         if (yystack_[2].value.as < Node* > ()->type != yystack_[0].value.as < Node* > ()->type) {
-            error("[Erro Semantico]: Tipos incopativeis encontrados durante uma expressão de subtracao");
+            error("[Erro Semantico] Tipos incopativeis encontrados durante uma expressão de subtracao");
             yylhs.value.as < Node* > () = new Node("error");
         } else {
             yylhs.value.as < Node* > () = new Node("expression", yystack_[2].value.as < Node* > ()->type, yystack_[2].value.as < Node* > ()->value);
@@ -1143,10 +1143,10 @@ namespace  Cd  {
     break;
 
   case 36: // expression: expression MUL expression
-#line 382 "parser.y"
+#line 381 "parser.y"
         {
         if (yystack_[2].value.as < Node* > ()->type != yystack_[0].value.as < Node* > ()->type) {
-            error("[Erro Semantico]: Tipos incopativeis encontrados durante uma expressão de multiplicação");
+            error("[Erro Semantico] Tipos incopativeis encontrados durante uma expressão de multiplicação");
             yylhs.value.as < Node* > () = new Node("error");
         } else {
             yylhs.value.as < Node* > () = new Node("expression", yystack_[2].value.as < Node* > ()->type, yystack_[2].value.as < Node* > ()->value);
@@ -1159,10 +1159,10 @@ namespace  Cd  {
     break;
 
   case 37: // expression: expression DIV expression
-#line 394 "parser.y"
+#line 393 "parser.y"
         {
         if (yystack_[2].value.as < Node* > ()->type != yystack_[0].value.as < Node* > ()->type) {
-            error("[Erro Semantico]: Tipos incopativeis encontrados durante uma expressão de divisão");
+            error("[Erro Semantico] Tipos incopativeis encontrados durante uma expressão de divisão");
             yylhs.value.as < Node* > () = new Node("error");
         } else {
             yylhs.value.as < Node* > () = new Node("expression", yystack_[2].value.as < Node* > ()->type, yystack_[2].value.as < Node* > ()->value);
@@ -1175,7 +1175,7 @@ namespace  Cd  {
     break;
 
   case 38: // expression: ID INC
-#line 406 "parser.y"
+#line 405 "parser.y"
         {
         SymbolInfo* info = driver.m_symbolTable.find(yystack_[1].value.as < SymbolInfo* > ()->name);
         yylhs.value.as < Node* > () = new Node("expression", info->type, info->value);
@@ -1186,7 +1186,7 @@ namespace  Cd  {
     break;
 
   case 39: // expression: INC ID
-#line 413 "parser.y"
+#line 412 "parser.y"
         {
         SymbolInfo* info = driver.m_symbolTable.find(yystack_[0].value.as < SymbolInfo* > ()->name);
         yylhs.value.as < Node* > () = new Node("expression", info->type, info->value);
@@ -1197,7 +1197,7 @@ namespace  Cd  {
     break;
 
   case 40: // expression: ID DEC
-#line 420 "parser.y"
+#line 419 "parser.y"
         {
         SymbolInfo* info = driver.m_symbolTable.find(yystack_[1].value.as < SymbolInfo* > ()->name);
         yylhs.value.as < Node* > () = new Node("expression", info->type, info->value);
@@ -1208,7 +1208,7 @@ namespace  Cd  {
     break;
 
   case 41: // expression: DEC ID
-#line 427 "parser.y"
+#line 426 "parser.y"
         {
         SymbolInfo* info = driver.m_symbolTable.find(yystack_[0].value.as < SymbolInfo* > ()->name);
         yylhs.value.as < Node* > () = new Node("expression", info->type, info->value);
@@ -1219,7 +1219,7 @@ namespace  Cd  {
     break;
 
   case 42: // expression: expression OR expression
-#line 434 "parser.y"
+#line 433 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("expression", TokenType::INT);
         yylhs.value.as < Node* > ()->addChild(yystack_[2].value.as < Node* > ());
@@ -1230,7 +1230,7 @@ namespace  Cd  {
     break;
 
   case 43: // expression: expression AND expression
-#line 441 "parser.y"
+#line 440 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("expression", TokenType::INT);
         yylhs.value.as < Node* > ()->addChild(yystack_[2].value.as < Node* > ());
@@ -1241,7 +1241,7 @@ namespace  Cd  {
     break;
 
   case 44: // expression: NOT expression
-#line 448 "parser.y"
+#line 447 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("expression", TokenType::INT);
         yylhs.value.as < Node* > ()->addChild(new Node("NOT"));
@@ -1251,7 +1251,7 @@ namespace  Cd  {
     break;
 
   case 45: // expression: expression EQU expression
-#line 454 "parser.y"
+#line 453 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("expression", TokenType::INT);
         yylhs.value.as < Node* > ()->addChild(yystack_[2].value.as < Node* > ());
@@ -1262,7 +1262,7 @@ namespace  Cd  {
     break;
 
   case 46: // expression: expression REL expression
-#line 461 "parser.y"
+#line 460 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("expression", TokenType::INT);
         yylhs.value.as < Node* > ()->addChild(yystack_[2].value.as < Node* > ());
@@ -1273,7 +1273,7 @@ namespace  Cd  {
     break;
 
   case 47: // expression: LPAREN expression RPAREN
-#line 468 "parser.y"
+#line 467 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("expression", yystack_[1].value.as < Node* > ()->type, yystack_[1].value.as < Node* > ()->value);
         yylhs.value.as < Node* > ()->addChild(new Node("LPAREN"));
@@ -1284,7 +1284,7 @@ namespace  Cd  {
     break;
 
   case 48: // expression: variable
-#line 475 "parser.y"
+#line 474 "parser.y"
         { 
         SymbolInfo* info = driver.m_symbolTable.find(std::get<std::string>(yystack_[0].value.as < Node* > ()->value));
         yylhs.value.as < Node* > () = new Node("expression", info->type, info->value);
@@ -1294,7 +1294,7 @@ namespace  Cd  {
     break;
 
   case 49: // expression: literal
-#line 481 "parser.y"
+#line 480 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("expression", yystack_[0].value.as < Node* > ()->type, yystack_[0].value.as < Node* > ()->value);
         yylhs.value.as < Node* > ()->addChild(yystack_[0].value.as < Node* > ());
@@ -1303,7 +1303,7 @@ namespace  Cd  {
     break;
 
   case 50: // statements: %empty
-#line 489 "parser.y"
+#line 488 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("statements");
     }
@@ -1311,7 +1311,7 @@ namespace  Cd  {
     break;
 
   case 51: // statements: statements statement
-#line 493 "parser.y"
+#line 492 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("statements");
         yylhs.value.as < Node* > ()->addChild(yystack_[1].value.as < Node* > ());
@@ -1321,7 +1321,7 @@ namespace  Cd  {
     break;
 
   case 52: // if_statement: IF LPAREN expression RPAREN tail else_if optional_else
-#line 502 "parser.y"
+#line 501 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("if_statement");
         yylhs.value.as < Node* > ()->addChild(new Node("IF"));
@@ -1336,7 +1336,7 @@ namespace  Cd  {
     break;
 
   case 53: // if_statement: IF LPAREN expression RPAREN tail optional_else
-#line 513 "parser.y"
+#line 512 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("if_statement");
         yylhs.value.as < Node* > ()->addChild(new Node("IF"));
@@ -1350,7 +1350,7 @@ namespace  Cd  {
     break;
 
   case 54: // if_statement: IF error RBRACE
-#line 523 "parser.y"
+#line 522 "parser.y"
     {
         std::cout << "[Erro sintático] Bloco if com erro terminado na linha: " << driver.lineNumber << std::endl;
         yylhs.value.as < Node* > () = new Node("error");
@@ -1359,7 +1359,7 @@ namespace  Cd  {
     break;
 
   case 55: // else_if: else_if ELSE IF LPAREN expression RPAREN tail
-#line 531 "parser.y"
+#line 530 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("else_if");
         yylhs.value.as < Node* > ()->addChild(yystack_[6].value.as < Node* > ());
@@ -1374,7 +1374,7 @@ namespace  Cd  {
     break;
 
   case 56: // else_if: ELSE IF LPAREN expression RPAREN tail
-#line 542 "parser.y"
+#line 541 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("else_if");
         yylhs.value.as < Node* > ()->addChild(new Node("ELSE"));
@@ -1388,7 +1388,7 @@ namespace  Cd  {
     break;
 
   case 57: // else_if: ELSE error RBRACE
-#line 552 "parser.y"
+#line 551 "parser.y"
     {
         std::cout << "[Erro sintático] Bloco else com erro terminado na linha: " << driver.lineNumber << std::endl;
         yylhs.value.as < Node* > () = new Node("error");
@@ -1397,7 +1397,7 @@ namespace  Cd  {
     break;
 
   case 58: // optional_else: ELSE tail
-#line 560 "parser.y"
+#line 559 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("optional_else");
         yylhs.value.as < Node* > ()->addChild(new Node("ELSE"));
@@ -1407,7 +1407,7 @@ namespace  Cd  {
     break;
 
   case 59: // optional_else: %empty
-#line 565 "parser.y"
+#line 564 "parser.y"
                  {
         yylhs.value.as < Node* > () = new Node("optional_else");
 	}
@@ -1415,7 +1415,7 @@ namespace  Cd  {
     break;
 
   case 60: // for_statement: FOR LPAREN assignment SEMI expression SEMI ID INC RPAREN tail
-#line 572 "parser.y"
+#line 571 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("for_statement");
         yylhs.value.as < Node* > ()->addChild(new Node("FOR"));
@@ -1433,7 +1433,7 @@ namespace  Cd  {
     break;
 
   case 61: // for_statement: FOR LPAREN assignment SEMI expression SEMI ID DEC RPAREN tail
-#line 586 "parser.y"
+#line 585 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("for_statement");
         yylhs.value.as < Node* > ()->addChild(new Node("FOR"));
@@ -1451,7 +1451,7 @@ namespace  Cd  {
     break;
 
   case 62: // for_statement: FOR error RBRACE
-#line 600 "parser.y"
+#line 599 "parser.y"
     {
         std::cout << "[Erro sintático] Bloco FOR com erro terminado na linha: " << driver.lineNumber << std::endl;
         yylhs.value.as < Node* > () = new Node("error");
@@ -1460,7 +1460,7 @@ namespace  Cd  {
     break;
 
   case 63: // while_statement: WHILE LPAREN expression RPAREN tail
-#line 608 "parser.y"
+#line 607 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("while_statement");
         yylhs.value.as < Node* > ()->addChild(new Node("WHILE"));
@@ -1473,7 +1473,7 @@ namespace  Cd  {
     break;
 
   case 64: // while_statement: WHILE error RBRACE
-#line 617 "parser.y"
+#line 616 "parser.y"
     {
         std::cout << "[Erro sintático] Bloco WHILE com erro terminado na linha: " << driver.lineNumber << std::endl;
         yylhs.value.as < Node* > () = new Node("error");
@@ -1482,7 +1482,7 @@ namespace  Cd  {
     break;
 
   case 65: // tail: LBRACE statements RBRACE
-#line 625 "parser.y"
+#line 624 "parser.y"
     { 
         yylhs.value.as < Node* > () = new Node("tail");
         yylhs.value.as < Node* > ()->addChild(new Node("LBRACE"));
@@ -1493,7 +1493,7 @@ namespace  Cd  {
     break;
 
   case 66: // assignment: variable ASSIGN expression
-#line 635 "parser.y"
+#line 634 "parser.y"
     {
         SymbolInfo* info = driver.m_symbolTable.find(std::get<std::string>(yystack_[2].value.as < Node* > ()->value));
 
@@ -1517,7 +1517,7 @@ namespace  Cd  {
     break;
 
   case 67: // io_statement: PRINT LPAREN literal RPAREN
-#line 658 "parser.y"
+#line 657 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(new Node("PRINT"));
@@ -1529,7 +1529,7 @@ namespace  Cd  {
     break;
 
   case 68: // io_statement: PRINT LPAREN variable RPAREN
-#line 666 "parser.y"
+#line 665 "parser.y"
     {
 
         yylhs.value.as < Node* > () = new Node("statement");
@@ -1542,7 +1542,7 @@ namespace  Cd  {
     break;
 
   case 69: // io_statement: SCAN LPAREN variable RPAREN
-#line 675 "parser.y"
+#line 674 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(new Node("SCAN"));
@@ -1554,7 +1554,7 @@ namespace  Cd  {
     break;
 
   case 70: // statement: if_statement
-#line 686 "parser.y"
+#line 685 "parser.y"
         { 
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(yystack_[0].value.as < Node* > ());
@@ -1563,7 +1563,7 @@ namespace  Cd  {
     break;
 
   case 71: // statement: for_statement
-#line 691 "parser.y"
+#line 690 "parser.y"
         { 
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(yystack_[0].value.as < Node* > ());
@@ -1572,7 +1572,7 @@ namespace  Cd  {
     break;
 
   case 72: // statement: while_statement
-#line 696 "parser.y"
+#line 695 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(yystack_[0].value.as < Node* > ());
@@ -1581,7 +1581,7 @@ namespace  Cd  {
     break;
 
   case 73: // statement: assignment SEMI
-#line 701 "parser.y"
+#line 700 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(yystack_[1].value.as < Node* > ());
@@ -1591,7 +1591,7 @@ namespace  Cd  {
     break;
 
   case 74: // statement: CONTINUE SEMI
-#line 707 "parser.y"
+#line 706 "parser.y"
         { 
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(new Node("CONTINUE"));
@@ -1601,7 +1601,7 @@ namespace  Cd  {
     break;
 
   case 75: // statement: BREAK SEMI
-#line 713 "parser.y"
+#line 712 "parser.y"
         { 
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(new Node("BREAK"));
@@ -1611,7 +1611,7 @@ namespace  Cd  {
     break;
 
   case 76: // statement: ID INC SEMI
-#line 719 "parser.y"
+#line 718 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(new Node("ID"));
@@ -1622,7 +1622,7 @@ namespace  Cd  {
     break;
 
   case 77: // statement: INC ID SEMI
-#line 726 "parser.y"
+#line 725 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(new Node("INC"));
@@ -1633,7 +1633,7 @@ namespace  Cd  {
     break;
 
   case 78: // statement: ID DEC SEMI
-#line 733 "parser.y"
+#line 732 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(new Node("ID"));
@@ -1644,7 +1644,7 @@ namespace  Cd  {
     break;
 
   case 79: // statement: DEC ID SEMI
-#line 740 "parser.y"
+#line 739 "parser.y"
         {
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(new Node("DEC"));
@@ -1655,7 +1655,7 @@ namespace  Cd  {
     break;
 
   case 80: // statement: io_statement SEMI
-#line 747 "parser.y"
+#line 746 "parser.y"
     {
         yylhs.value.as < Node* > () = new Node("statement");
         yylhs.value.as < Node* > ()->addChild(yystack_[1].value.as < Node* > ());
@@ -1665,7 +1665,7 @@ namespace  Cd  {
     break;
 
   case 81: // statement: error SEMI
-#line 753 "parser.y"
+#line 752 "parser.y"
     {
         std::cout << "[Erro sintático] Expressão mal formatada na linha: " << driver.lineNumber << std::endl;
         yylhs.value.as < Node* > () = new Node("error");
@@ -2105,15 +2105,15 @@ namespace  Cd  {
   const short
    Parser ::yyrline_[] =
   {
-       0,    77,    77,    87,    93,   100,   111,   118,   127,   166,
-     170,   177,   182,   187,   192,   197,   205,   212,   219,   224,
-     232,   237,   246,   253,   263,   268,   276,   289,   302,   315,
-     326,   333,   340,   347,   357,   369,   381,   393,   405,   412,
-     419,   426,   433,   440,   447,   453,   460,   467,   474,   480,
-     488,   492,   501,   512,   522,   530,   541,   551,   559,   565,
-     571,   585,   599,   607,   616,   624,   634,   657,   665,   674,
-     685,   690,   695,   700,   706,   712,   718,   725,   732,   739,
-     746,   752
+       0,    77,    77,    87,    93,   100,   110,   117,   126,   165,
+     169,   176,   181,   186,   191,   196,   204,   211,   218,   223,
+     231,   236,   245,   252,   262,   267,   275,   288,   301,   314,
+     325,   332,   339,   346,   356,   368,   380,   392,   404,   411,
+     418,   425,   432,   439,   446,   452,   459,   466,   473,   479,
+     487,   491,   500,   511,   521,   529,   540,   550,   558,   564,
+     570,   584,   598,   606,   615,   623,   633,   656,   664,   673,
+     684,   689,   694,   699,   705,   711,   717,   724,   731,   738,
+     745,   751
   };
 
   void
@@ -2148,7 +2148,7 @@ namespace  Cd  {
 } //  Cd 
 #line 2150 "parser.cpp"
 
-#line 759 "parser.y"
+#line 758 "parser.y"
 
 
 void Cd::Parser::error(const std::string& message) 

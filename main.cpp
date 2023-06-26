@@ -16,7 +16,8 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    Cd::Driver driver(file);
+    Cd::Driver driver(file, argv[1]);
     driver.init();
+
     return 0;
 }

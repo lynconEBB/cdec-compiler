@@ -11,6 +11,17 @@ namespace Cd
         return typeStr[static_cast<unsigned int>(type)];
     }
 
+    void SymbolTable::logPrint(SymbolInfo* info, bool firstInsertion){
+        if (firstInsertion) {
+            std::cout << "[Tabela de Simbolos] Encontrado cadeia: " << info->name << 
+            " da classe: " << info->classType <<
+            " na linha: " << m_driver.lineNumber << '\n';
+        } else {
+            std::cout << "[Tabela de Simbolos] Nova referencia da cadeia: " << info->name << 
+            " da classe: " << info->classType <<
+            " encontrada na linha: " << m_driver.lineNumber << '\n';
+        }
+    }
     void SymbolTable::print()
     {
         std::cout << '\n';
@@ -60,9 +71,11 @@ namespace Cd
         if (result != symbolTable.end()) {
             info = result->second;
             info->references.push_back(m_driver.lineNumber);
+            logPrint(info,false);
         } else {
             info = new SymbolInfo(name, classType, m_driver.lineNumber);
             symbolTable.insert(std::make_pair(name, info));
+            logPrint(info,true);
         }
 
         return info;

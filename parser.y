@@ -104,7 +104,6 @@ import:
         $$->addChild(new Node("STRLIT", TokenType::STR, std::get<std::string>($2)));
         $$->addChild(new Node("SEMI"));
     }
-
 ;
 
 declarations:
@@ -357,7 +356,7 @@ expression:
     expression ADD expression
 	{ 
         if ($1->type != $3->type) {
-            std::cout << "[Erro Semantico]: Tipos incopativeis encontrados durante uma expressão de soma na linha: " << driver.lineNumber << std::endl;
+            std::cout << "[Erro Semantico] Tipos incopativeis encontrados durante uma expressão de soma na linha: " << driver.lineNumber << std::endl;
             $$ = new Node("error");
         } else {
             $$ = new Node("expression", $1->type, $1->value);
@@ -369,7 +368,7 @@ expression:
     | expression SUB expression
 	{ 
         if ($1->type != $3->type) {
-            error("[Erro Semantico]: Tipos incopativeis encontrados durante uma expressão de subtracao");
+            error("[Erro Semantico] Tipos incopativeis encontrados durante uma expressão de subtracao");
             $$ = new Node("error");
         } else {
             $$ = new Node("expression", $1->type, $1->value);
@@ -381,7 +380,7 @@ expression:
 	| expression MUL expression
 	{
         if ($1->type != $3->type) {
-            error("[Erro Semantico]: Tipos incopativeis encontrados durante uma expressão de multiplicação");
+            error("[Erro Semantico] Tipos incopativeis encontrados durante uma expressão de multiplicação");
             $$ = new Node("error");
         } else {
             $$ = new Node("expression", $1->type, $1->value);
@@ -393,7 +392,7 @@ expression:
 	| expression DIV expression
 	{
         if ($1->type != $3->type) {
-            error("[Erro Semantico]: Tipos incopativeis encontrados durante uma expressão de divisão");
+            error("[Erro Semantico] Tipos incopativeis encontrados durante uma expressão de divisão");
             $$ = new Node("error");
         } else {
             $$ = new Node("expression", $1->type, $1->value);

@@ -12,12 +12,14 @@ namespace Cd {
 class Driver {
 
 public:
-    Driver(std::ifstream& inputStream) : m_scanner(*this, inputStream), m_parser(m_scanner, *this), m_symbolTable(*this) {}
+    Driver(std::ifstream& inputStream, const std::string& filename): 
+        m_filename(filename), m_scanner(*this, inputStream), m_parser(m_scanner, *this), m_symbolTable(*this) {}
     void init();
     void printAST(Node* node);
 public:
     int lineNumber = 1;
     SymbolTable m_symbolTable;
+    std::string m_filename;
 
 private:
     Scanner m_scanner;
