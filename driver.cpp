@@ -22,7 +22,7 @@ void recursivePrint(Node* node, int tabs, std::ostream& out)
         }
     }
 
-    out << node->name << " " << node->children.size() << '\n';
+    out << node->name << '\n';
 
     for (Node* child : node->children) {
         recursivePrint(child, tabs + 1, out);

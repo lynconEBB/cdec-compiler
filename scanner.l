@@ -11,7 +11,7 @@
 	#include "driver.h"
 	#include "parser.h"
 
-	#define ERROR(MESSAGE) std::cout << "[ERROR]> Cadeia: " << yytext\
+	#define ERROR(MESSAGE) std::cout << "[Erro léxico]> Cadeia: " << yytext\
 						   << " - " << MESSAGE << " na linha " << m_driver.lineNumber << '\n'
 	
 	#define RETURN_TOKEN(TOK_TYPE, ...) \

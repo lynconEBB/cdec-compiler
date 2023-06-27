@@ -8,7 +8,7 @@
 %define api.value.type variant
 %define parse.assert
 
-%expect 2
+%expect 1
 
 // parser.h
 %code requires
@@ -52,7 +52,7 @@
 %token COMMA LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE SEMI ASSIGN REFER
 %token IF ELSE WHILE FOR CONTINUE BREAK RETURN IMPORT PRINT SCAN
 %token ADD SUB MUL DIV INC DEC OR AND NOT EQU REL
-%token<std::variant<int,double,char,std::string>> ILIT FLIT CHLIT STRLIT
+%token<std::variant<int, double, char, std::string>> ILIT FLIT CHLIT STRLIT
 %token<SymbolInfo*> ID
 
 %left COMMA
@@ -140,7 +140,7 @@ declaration:
         std::vector<Node*> initializations = $2->getChildsByName("scalar_initialization");
         for (Node* n : initializations) {
             if (n->type != $1->type) {
-                std::cout << "[Erro semantico] Tentativa de atribuir valor " << typeToStr(n->type) << " a variavel " 
+                std::cout << "[Erro semantico] Tentativa de atribuir valor do tipo" << typeToStr(n->type) << " a variavel " 
                 << std::get<std::string>(n->children[0]->value) << " do tipo " << typeToStr($1->type) << " na linha: " 
                 << driver.lineNumber << std::endl;
             } else {
@@ -163,11 +163,11 @@ declaration:
         }
     }
     | error SEMI {
-        std::cout << "[Erro sintático] Não foi possível realizar a declaração da variavel na linha: " << driver.lineNumber << std::endl;
-        $$ = new Node("error");
-    }
-    | error RBRACE {
-        std::cout << "[Erro sintático] Bloco encontrado anteriormente a todas as declarações na linha : " << driver.lineNumber << std::endl;
+        if (driver.declaring) {
+            std::cout << "[Erro sintático] Não foi possível realizar a declaração da variavel na linha: " << driver.lineNumber << std::endl;
+        } else {
+            std::cout << "[Erro sintático] Sentença mal formatada na linha: " << driver.lineNumber << std::endl;
+        }
         $$ = new Node("error");
     }
 ;
@@ -275,9 +275,6 @@ scalar_initialization:
     ID ASSIGN literal
     {
         $$ = new Node("scalar_initialization", $3->type, $3->value); 
-        $$->type = $3->type;
-        $$->value = $3->value;
-
         $$->addChild(new Node("ID", $3->type, $1->name));
         $$->addChild(new Node("ASSIGN"));
         $$->addChild($3);
@@ -490,6 +487,7 @@ statements:
     }
     | statements statement
     {
+        driver.declaring = false;
         $$ = new Node("statements");
         $$->addChild($1);
         $$->addChild($2);
@@ -747,11 +745,6 @@ statement:
         $$ = new Node("statement");
         $$->addChild($1);
         $$->addChild(new Node("SEMI"));
-    }
-    | error SEMI
-    {
-        std::cout << "[Erro sintático] Expressão mal formatada na linha: " << driver.lineNumber << std::endl;
-        $$ = new Node("error");
     }
 ;
 

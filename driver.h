@@ -20,6 +20,7 @@ public:
     int lineNumber = 1;
     SymbolTable m_symbolTable;
     std::string m_filename;
+    bool declaring = true;
 
 private:
     Scanner m_scanner;
